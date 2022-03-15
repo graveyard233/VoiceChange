@@ -10,12 +10,24 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.voicechange.Info.SocketMsg;
+import com.example.voicechange.Info.TerminalInfo;
 import com.example.voicechange.POJO.JsonRootBean;
 import com.example.voicechange.Utils.AdressUtils;
+import com.example.voicechange.Utils.SocketUtils;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.SecureRandom;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -28,8 +40,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "MainActivity";
     private Button btn_link;
+    private Button btn_socketLink;
     private OkHttpClient okHttpClient;
     private TextView textView1;
+    private TextView textView2;
+    private int flag = 0;
+
+
+    private String equip_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +55,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         btn_link = findViewById(R.id.btn_link);
         btn_link.setOnClickListener(this);
+        btn_socketLink = findViewById(R.id.btn_socketLink);
+        btn_socketLink.setOnClickListener(this);
+
+
 
     }
 
@@ -45,14 +67,79 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.btn_link:
                 System.out.println(AdressUtils.getLocalip());
+
                 getAsync();
-//                textView1 = findViewById(R.id.textView1);
-//                System.out.println(textView1.getText());
                 break;
+            case R.id.btn_socketLink:
+                SocketIOLink();
+                textView2 = findViewById(R.id.textView2);
+                textView2.setText(equip_id);
             default:
                 break;
 
         }
+    }
+
+    public void SocketIOLink(){
+        Socket mySocket = null;
+        String server_url = "http://172.16.100.160:2021/";
+        try {
+            IO.Options options = new IO.Options();
+            mySocket = IO.socket(server_url,options);
+        } catch (URISyntaxException e){
+            e.printStackTrace();
+        }
+
+        mySocket.connect();
+        mySocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i(TAG, "call: " + "连接成功");
+            }
+        });
+
+        Log.e(TAG, "SocketIOLink: " + "开始初始化");
+        SocketMsg socketMsg = new SocketMsg();
+        socketMsg.setTo("0");
+        socketMsg.setFrom(String.valueOf(equip_id));
+        socketMsg.setRequest_id(String.valueOf(flag++));
+        socketMsg.setFashion("single");
+        socketMsg.setType("online");
+        socketMsg.setContent(String.valueOf(equip_id));
+
+        TerminalInfo terminalInfo = new TerminalInfo();
+        terminalInfo.setIp(AdressUtils.getLocalip());
+        terminalInfo.setMac(AdressUtils.getMac(true));
+        terminalInfo.setModel("未定义");
+        terminalInfo.setType("terminal");//card
+        terminalInfo.setIs_login(1);
+        terminalInfo.setScreen_key("");
+
+        Gson gson_online = new Gson();
+        String expend = gson_online.toJson(terminalInfo);
+
+        socketMsg.setExpand(expend);
+
+        String msg = gson_online.toJson(socketMsg);
+        mySocket.emit("online",msg);//发送上线消息
+        System.out.println("消息发送去服务器了");
+        mySocket.on("system", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textView2 = findViewById(R.id.textView2);
+                        System.out.println("接受到了消息");
+                        textView2.setText(args[0].toString());
+                        for (int i = 0; i < args.length; i++) {
+                            System.out.println(args[i].toString());
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
     public void getSycn(){//同步
@@ -77,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Gson gson = new Gson();
                     JsonRootBean jsonRootBean1 = gson.fromJson(message,JsonRootBean.class);
                     System.out.println(jsonRootBean1.toString());
-                    call.cancel();
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -123,10 +209,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 if (response.isSuccessful()){
                     Log.i(TAG, "response: " + msg);
-                    getMsg(jsonRootBean2.getMessage());
+
                 }
                 if (jsonRootBean2.getStatus_code() == 200){
-                    System.out.println(jsonRootBean2.getStatus_code());
+                    System.out.println(jsonRootBean2.getData().getEquipment_id());
+                    equip_id = String.valueOf(jsonRootBean2.getData().getEquipment_id());
+                    getMsg(equip_id);
                 }
 //                else if (root1.getMessage().equals("FindNotRecordInDB")){
 //                    System.out.println(root1.getMessage() + ",我要post");
