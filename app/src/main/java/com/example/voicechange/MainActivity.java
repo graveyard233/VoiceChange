@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textView2;
     private int flag = 0;
 
+//  新的分支
 
     public static final String joinGroup = "joinGroup";//加进组通知
     private static final String EVENT_GROUP = "group";
