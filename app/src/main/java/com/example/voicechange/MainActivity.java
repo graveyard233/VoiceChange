@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String msg = gson_online.toJson(socketMsg);
         mySocket.emit("online",msg);//发送上线消息
         System.out.println("发送上线消息");
+        Socket finalMySocket = mySocket;
         mySocket.on("system", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -158,6 +159,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         textView2.setText(args[0].toString());
                         for (int i = 0; i < args.length; i++) {
                             System.out.println(args[i].toString());
+                            SocketMsg socketMsg1 = new SocketMsg();
+                            socketMsg1 = gson_online.fromJson(args[i].toString(),SocketMsg.class);
+                            System.out.println(socketMsg1.getType());
+                            if (socketMsg1.getType().equals(joinGroup)){
+                                sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());
+                            }
                         }
                     }
                 });
@@ -165,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
     //等我登录了再说
     public void SocketIOJoinGroup(){
         Socket mySocket = null;
@@ -192,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson_group = new Gson();
         String msg = gson_group.toJson(socketMsg);
         mySocket.emit("group",msg);
+        Socket finalMySocket = mySocket;
         mySocket.on("system", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -199,7 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = 0; i < args.length; i++) {
                     System.out.println(args[i].toString());
                     SocketMsg socketMsg1 = new SocketMsg();
-
+                    socketMsg1 = gson_group.fromJson(args[i].toString(),SocketMsg.class);
+                    System.out.println(socketMsg1.getType());
+                    if (socketMsg1.getType() == "joinGroup"){
+                        sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());
+                    }
                 }
             }
         });
@@ -334,7 +347,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.add("version","1.0.0.1");
 
         RequestBody formBody = builder.build();
-
 //                .add("rid","0")
 //                .add("type","terminal")
 //                .add("name","Android-"+ip)
@@ -342,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                .add("serial_number",mac)
 //                .add("mac",AdressUtils.getMac(true))
 //                .add("version","1.0.0.1").build();
-
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("content-type","application/x-www-form-urlencoded")
@@ -398,7 +409,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addHeader("content-type","application/x-www-form-urlencoded")
                 .addHeader("authorization",
                         "MWFjMDY0NjlxOGZjZjg3ZmJiZDQ3ZTViZjkwOWYwZDY4YjU1NWMxNTJkZDhhZDk4MDFhZjA2MzE3OTEwMWEyMQ==")
-//                            "MWFjMDY0NjlxOGZjZjg3ZmJiZDQ3ZTViZjkwOWYWZDY4YjU1NWMxNTJkZDhhZDk4MDFhZjA2MzE3OTEwMWEyMQ=="
                 .post(requestBody)
                 .build();
         okHttpClient.newCall(request).enqueue(new Callback() {
@@ -414,8 +424,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i(TAG, "onResponse: " + response_msg);
                     Gson gson = new Gson();
                     JsonRootBean jsonRootBean4 = gson.fromJson(response_msg,JsonRootBean.class);
-                    System.out.println(jsonRootBean4.toString());
                 }
+
             }
         });
     }
