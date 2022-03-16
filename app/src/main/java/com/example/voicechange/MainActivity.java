@@ -38,6 +38,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
+    //全局变量
     private static final String TAG = "MainActivity";
     private Button btn_link;
     private Button btn_socketLink;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textView2;
     private int flag = 0;
 
-//  新的分支
+//  新的分支,这是标记
 
     public static final String joinGroup = "joinGroup";//加进组通知
     private static final String EVENT_GROUP = "group";
@@ -81,14 +82,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_link:
-                System.out.println(AdressUtils.getLocalip());
-
-                getAsync();
-
-
+                System.out.println(AdressUtils.getLocalip());//打印虚拟机IP
+                getEquipInfo();//连接服务器，获取设备信息
                 break;
             case R.id.btn_socketLink:
-                SocketIOLink();
+                SocketIOLink();//连接服务器
                 textView2 = findViewById(R.id.textView2);
                 textView2.setText(equip_id);
                 break;
@@ -96,8 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                SocketIOJoinGroup();
                 break;
             case R.id.btn_login:
-                System.out.println("我点了登录键");
-                postAsync_Login();
+                postAsync_Login();//登录的同时进行加组
                 break;
             default:
                 break;
@@ -105,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //socket连接服务器，并且监听服务器的返回消息
     public void SocketIOLink(){
         Socket mySocket = null;
         String server_url = "http://172.16.0.160:2021/";
@@ -141,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         terminalInfo.setScreen_key("");
 
         Gson gson_online = new Gson();
-        String expend = gson_online.toJson(terminalInfo);
+        String expend = gson_online.toJson(terminalInfo);//将类转成string类型方便发送
 
         socketMsg.setExpand(expend);
 
@@ -161,10 +159,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         for (int i = 0; i < args.length; i++) {
                             System.out.println(args[i].toString());
                             SocketMsg socketMsg1 = new SocketMsg();
-                            socketMsg1 = gson_online.fromJson(args[i].toString(),SocketMsg.class);
+                            socketMsg1 = gson_online.fromJson(args[i].toString(),SocketMsg.class);//将服务器返回的json信息转换成自己的对象
                             System.out.println(socketMsg1.getType());
-                            if (socketMsg1.getType().equals(joinGroup)){
-                                sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());
+
+                            if (socketMsg1.getType().equals(joinGroup)){//判断服务器返回的类型是否为joingroup
+                                sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());//将设备加入组，之后就能收到来自服务器的信息了
                             }
                         }
                     }
@@ -174,57 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    //等我登录了再说
-    public void SocketIOJoinGroup(){
-        Socket mySocket = null;
-        String server_url = "http://172.16.0.160:2021/";
-        try {
-            IO.Options options = new IO.Options();
-            mySocket = IO.socket(server_url,options);
-        } catch (URISyntaxException e){
-            e.printStackTrace();
-        }
-
-        mySocket.connect();
-
-        Log.e(TAG, "SocketIOJoinGroup: " + "开始初始化");
-
-        SocketMsg socketMsg = new SocketMsg();
-        socketMsg.setTo("0");
-        socketMsg.setFrom(String.valueOf(equip_id));
-        socketMsg.setRequest_id(String.valueOf(flag++));
-        socketMsg.setFashion("single");
-        socketMsg.setType("join");
-        socketMsg.setContent(String.valueOf(equip_id));
-        Log.e(TAG, "SocketMsg: " + socketMsg.toString());
-
-        Gson gson_group = new Gson();
-        String msg = gson_group.toJson(socketMsg);
-        mySocket.emit("group",msg);
-        Socket finalMySocket = mySocket;
-        mySocket.on("system", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.e(TAG, "System call: 收到了消息" );
-                for (int i = 0; i < args.length; i++) {
-                    System.out.println(args[i].toString());
-                    SocketMsg socketMsg1 = new SocketMsg();
-                    socketMsg1 = gson_group.fromJson(args[i].toString(),SocketMsg.class);
-                    System.out.println(socketMsg1.getType());
-                    if (socketMsg1.getType() == "joinGroup"){
-                        sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());
-                    }
-                }
-            }
-        });
-
-
-
-
-
-
-    }
-
+    //发送登录的socket信息
     public void sendData(Socket socket,String emitEvent,String to,String fashion,String type,String content) {
         // Log.e("TAG","sendData");
         SocketMsg socketMsg = new SocketMsg();
@@ -240,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         socket.emit(emitEvent,msg);
     }
 
-    public void getSycn(){//同步
+    //同步请求，一般不用
+    public void getSycn(){
         new Thread(){
             @Override
             public void run() {
@@ -270,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }.start();
     }
 
+    //打印信息
     public void getMsg(String response){
         runOnUiThread(new Runnable() {
             @Override
@@ -281,20 +232,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-
-
-
     //异步get,获取设备信息
-    public void getAsync(){
+    public void getEquipInfo(){//getAsync
         String mac = AdressUtils.getMac(false);
         System.out.println(mac);
         String url = "http://172.16.0.160/v1/equipment/get_info";
-//                "https://www.baidu.com"    "http://172.16.100.160:83/v1/equipment/get_info"
-        okHttpClient = new OkHttpClient();
+        okHttpClient = new OkHttpClient();//实例化一个okhttp对象
         Request request = new Request.Builder()
                 .url(url + "?serial_number=" + mac )
-                .build();
-        System.out.println(url + "?serial_number=" + mac );
+                .build(); // 配置请求主题
         Call call = okHttpClient.newCall(request);
         //异步请求
         call.enqueue(new Callback() {
@@ -308,34 +254,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Gson gson = new Gson();
                 String msg = response.body().string();
                 JsonRootBean jsonRootBean2 = gson.fromJson(msg,JsonRootBean.class);
-                equipmentInfo = gson.fromJson(msg,JsonRootBean.class);
-                System.out.println(equipmentInfo.getData().getParticipant_name());
+                equipmentInfo = gson.fromJson(msg,JsonRootBean.class);//获取这个设备
 
-                if (response.isSuccessful()){
+                if (response.isSuccessful()){//假如连接成功了就打印回复
                     Log.i(TAG, "response: " + msg);
-
                 }
                 if (jsonRootBean2.getStatus_code() == 200){
                     System.out.println(jsonRootBean2.getData().getEquipment_id());
                     equip_id = String.valueOf(jsonRootBean2.getData().getEquipment_id());
-                    getMsg(equip_id);
+                    getMsg(equip_id);//打印设备ID
                 }
-//                else if (root1.getMessage().equals("FindNotRecordInDB")){
-//                    System.out.println(root1.getMessage() + ",我要post");
-//                    //postAsync();
-//                }
+                else if (jsonRootBean2.getMessage().equals("FindNotRecordInDB")){
+                    System.out.println(jsonRootBean2.getMessage() + ",我要添加设备");
+                    addEquip();
+                }
 
             }
         });
     }
 
     //post异步,向服务器添加设备
-    public void postAsync(){
+    public void addEquip(){//postAsync
         String mac = AdressUtils.getMac(false);
         String ip = AdressUtils.getLocalip();
 
         String url = "http://172.16.0.160/v1/equipment/add";
-//                "https://www.baidu.com"    "http://172.16.100.160:83/v1/equipment/get_info"
         okHttpClient = new OkHttpClient();
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("rid","0");
@@ -348,13 +291,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.add("version","1.0.0.1");
 
         RequestBody formBody = builder.build();
-//                .add("rid","0")
-//                .add("type","terminal")
-//                .add("name","Android-"+ip)
-//                .add("ip",ip)
-//                .add("serial_number",mac)
-//                .add("mac",AdressUtils.getMac(true))
-//                .add("version","1.0.0.1").build();
+
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("content-type","application/x-www-form-urlencoded")
@@ -370,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String response_msg = response.body().string();
-                if (response.isSuccessful()){
+                if (response.isSuccessful()){//打印回复信息
                     Log.i(TAG, "onResponse: " + response_msg);
                 }
                 Gson gson = new Gson();
@@ -381,14 +318,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     System.out.println("添加失败");
                     Log.i(TAG, "onResponse: " + response_msg);
                     getMsg(response_msg);
-//                    Toast.makeText(getApplicationContext(),response_msg,Toast.LENGTH_LONG).show();
                 }
             }
         });
     }
 
-    //post异步，设备登录
-    public void postAsync_Login(){
+    //post异步，人员登录
+    public void postAsync_Login(){//登录之后才能接受到消息
 
         String url = "http://172.16.0.160/v1/public/login";
 
