@@ -28,15 +28,22 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="100dp"/>
-    <Button
-        android:text="加入组"
-        android:id="@+id/btn_joinGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+
     <Button
         android:text="登录"
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn_showFloat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="显示悬浮" />
+    <Button
+        android:id="@+id/btn_closeFloat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="去掉悬浮" />
 
 </LinearLayout>

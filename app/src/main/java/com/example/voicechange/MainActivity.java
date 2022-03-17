@@ -3,6 +3,7 @@ package com.example.voicechange;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = "MainActivity";
     private Button btn_link;
     private Button btn_socketLink;
-    private Button btn_joinGroup;
     private Button btn_login;
     private OkHttpClient okHttpClient;
     private TextView textView1;
@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int flag = 0;
 
 
+    private Button btn_showFloat;
+    private Button btn_closeFloat;
+//https://blog.csdn.net/dongzhong1990/article/details/80512706
 
     public static final String joinGroup = "joinGroup";//加进组通知
     private static final String EVENT_GROUP = "group";
@@ -69,12 +72,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_link.setOnClickListener(this);
         btn_socketLink = findViewById(R.id.btn_socketLink);
         btn_socketLink.setOnClickListener(this);
-        btn_joinGroup = findViewById(R.id.btn_joinGroup);
-        btn_joinGroup.setOnClickListener(this);
         btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(this);
 
-
+        btn_showFloat = findViewById(R.id.btn_showFloat);
+        btn_showFloat.setOnClickListener(this);
+        btn_closeFloat = findViewById(R.id.btn_closeFloat);
+        btn_closeFloat.setOnClickListener(this);
 
     }
 
@@ -90,11 +94,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textView2 = findViewById(R.id.textView2);
                 textView2.setText(equip_id);
                 break;
-            case R.id.btn_joinGroup:
-//                SocketIOJoinGroup();
-                break;
+
             case R.id.btn_login:
                 postAsync_Login();//登录的同时进行加组
+                break;
+            case R.id.btn_showFloat:
+                break;
+            case R.id.btn_closeFloat:
+
                 break;
             default:
                 break;
