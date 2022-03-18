@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
@@ -52,6 +54,39 @@ public class FloatViewService extends Service {
         button.setText("哈哈哈");
         button.setBackgroundColor(Color.GRAY);
         windowManager.addView(button,layoutParams);
+        button.setOnTouchListener(new FloatingOnTouch());
+    }
+
+    private class FloatingOnTouch implements View.OnTouchListener{
+
+        private int x;
+        private int y;
+
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            switch (motionEvent.getAction()){
+                case MotionEvent.ACTION_DOWN:
+                    x = (int) motionEvent.getRawX();
+                    y = (int) motionEvent.getRawY();
+//                    Log.e("TAG", "ACTION_DOWN: " + x +" , " + y);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    int nowX = (int) motionEvent.getRawX();
+                    int nowY = (int) motionEvent.getRawY();
+                    int movedX = nowX - x;
+                    int movedY = nowY - y;
+                    x = nowX;
+                    y = nowY;
+                    layoutParams.x = layoutParams.x + movedX;
+                    layoutParams.y = layoutParams.y + movedY;
+                    windowManager.updateViewLayout(button,layoutParams);
+                    break;
+                default:
+                    break;
+
+            }
+            return false;
+        }
     }
 
     public FloatViewService() {
@@ -71,6 +106,5 @@ public class FloatViewService extends Service {
             windowManager.removeView(button);
         }
         Log.d("TAG", "onDestroy: " + "floatService");
-
     }
 }
