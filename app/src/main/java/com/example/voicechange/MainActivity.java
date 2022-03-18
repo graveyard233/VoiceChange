@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.voicechange.FloatThings.FloatViewService;
+import com.example.voicechange.FloatThings.MyFloatIntentService;
 import com.example.voicechange.Info.SocketMsg;
 import com.example.voicechange.Info.TerminalInfo;
 import com.example.voicechange.POJO.JsonRootBean;
@@ -64,10 +66,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private JsonRootBean equipmentInfo = new JsonRootBean();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate: main activity");
         btn_link = findViewById(R.id.btn_link);
         btn_link.setOnClickListener(this);
         btn_socketLink = findViewById(R.id.btn_socketLink);
@@ -80,6 +85,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_closeFloat = findViewById(R.id.btn_closeFloat);
         btn_closeFloat.setOnClickListener(this);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: mainActivity");
     }
 
     @Override
@@ -99,9 +110,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 postAsync_Login();//登录的同时进行加组
                 break;
             case R.id.btn_showFloat:
+//                Intent intent1 = new Intent(this, MyFloatIntentService.class);
+//                startService(intent1);
+                Intent intent2 = new Intent(this, FloatViewService.class);
+                startService(intent2);
                 break;
             case R.id.btn_closeFloat:
-
+                Intent intent3 = new Intent(this, FloatViewService.class);
+                stopService(intent3);
                 break;
             default:
                 break;
