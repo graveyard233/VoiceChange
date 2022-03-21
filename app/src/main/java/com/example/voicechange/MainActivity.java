@@ -2,6 +2,8 @@ package com.example.voicechange;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +13,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.voicechange.FloatThings.FloatText;
+import com.example.voicechange.FloatThings.FloatTextAdapter;
 import com.example.voicechange.FloatThings.FloatViewService;
-import com.example.voicechange.FloatThings.MyFloatIntentService;
+import com.example.voicechange.Info.Expand_updateAsrResultLayoutConfig;
 import com.example.voicechange.Info.SocketMsg;
 import com.example.voicechange.Info.TerminalInfo;
 import com.example.voicechange.POJO.JsonRootBean;
@@ -27,6 +31,8 @@ import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -66,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private JsonRootBean equipmentInfo = new JsonRootBean();
 
+    private List<FloatText> floatTextList = new ArrayList<>();
+
 
 
     @Override
@@ -84,6 +92,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_showFloat.setOnClickListener(this);
         btn_closeFloat = findViewById(R.id.btn_closeFloat);
         btn_closeFloat.setOnClickListener(this);
+
+        initFloatText();
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
+        recyclerView.setAdapter(adapter);
 
     }
 
@@ -110,8 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 postAsync_Login();//登录的同时进行加组
                 break;
             case R.id.btn_showFloat:
-//                Intent intent1 = new Intent(this, MyFloatIntentService.class);
-//                startService(intent1);
+
                 Intent intent2 = new Intent(this, FloatViewService.class);
                 startService(intent2);
                 break;
@@ -122,6 +136,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
 
+        }
+    }
+
+    private void initFloatText(){
+        for (int i = 0; i < 3; i++) {
+            FloatText f1 = new FloatText("你好",i);
+            floatTextList.add(f1);
+            FloatText f2 = new FloatText("hello",i);
+            floatTextList.add(f2);
+            FloatText f3 = new FloatText("我知道了",i);
+            floatTextList.add(f3);
+            FloatText f4 = new FloatText("i know i know",i);
+            floatTextList.add(f4);
         }
     }
 
@@ -187,6 +214,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             if (socketMsg1.getType().equals(joinGroup)){//判断服务器返回的类型是否为joingroup
                                 sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());//将设备加入组，之后就能收到来自服务器的信息了
+                            }
+
+                            if (socketMsg1.getType().equals("updateAsrResultLayoutConfig")){//判断为更新布局
+                                String expand = socketMsg1.getExpand();
+                                System.out.println("expand:" + expand);
+                                Expand_updateAsrResultLayoutConfig expand_updateLayout = //转换成更新布局对象
+                                        gson_online.fromJson(expand,Expand_updateAsrResultLayoutConfig.class);
+                                System.out.println("expand's font" + expand_updateLayout.getFont());//打印字体
                             }
                         }
                     }

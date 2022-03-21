@@ -15,6 +15,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class FloatViewService extends Service {
 
     public static Boolean isStarted = false;
@@ -23,6 +29,9 @@ public class FloatViewService extends Service {
     private WindowManager.LayoutParams layoutParams;
 
     private Button button;
+
+    private RecyclerView recyclerView;
+    private List<FloatText> floatTextList = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -38,10 +47,11 @@ public class FloatViewService extends Service {
         layoutParams.format = PixelFormat.RGBA_8888;
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        layoutParams.width = 500;
-        layoutParams.height = 500;
-        layoutParams.x = 500;
-        layoutParams.y = 750;
+
+        layoutParams.width = windowManager.getDefaultDisplay().getWidth();//设置悬浮框的宽度为手机的宽度
+        layoutParams.height = 300;
+        layoutParams.x = 0;
+        layoutParams.y = windowManager.getDefaultDisplay().getHeight();//悬浮窗生成位置放在最底下
 
         showFloatWindow();
     }
@@ -50,11 +60,33 @@ public class FloatViewService extends Service {
 
 
     private void showFloatWindow() {
-        button = new Button(getApplicationContext());
-        button.setText("哈哈哈");
-        button.setBackgroundColor(Color.GRAY);
-        windowManager.addView(button,layoutParams);
-        button.setOnTouchListener(new FloatingOnTouch());
+
+        initFloatText();
+        recyclerView = new RecyclerView(getApplicationContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        recyclerView.setLayoutManager(layoutManager);
+        FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
+        recyclerView.setAdapter(adapter);
+        windowManager.addView(recyclerView,layoutParams);
+        recyclerView.setOnTouchListener(new FloatingOnTouch());
+    }
+
+    private void initFloatText(){
+        for (int i = 0; i < 3; i++) {
+            FloatText f1 = new FloatText("你好",i);
+            floatTextList.add(f1);
+            FloatText f2 = new FloatText("hello",i);
+            floatTextList.add(f2);
+            FloatText f3 = new FloatText("我知道了",i);
+            floatTextList.add(f3);
+            FloatText f4 = new FloatText("i know i know",i);
+            floatTextList.add(f4);
+        }
     }
 
     private class FloatingOnTouch implements View.OnTouchListener{
@@ -79,7 +111,7 @@ public class FloatViewService extends Service {
                     y = nowY;
                     layoutParams.x = layoutParams.x + movedX;
                     layoutParams.y = layoutParams.y + movedY;
-                    windowManager.updateViewLayout(button,layoutParams);
+                    windowManager.updateViewLayout(recyclerView,layoutParams);
                     break;
                 default:
                     break;
@@ -102,8 +134,8 @@ public class FloatViewService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (button.getParent() != null){
-            windowManager.removeView(button);
+        if (recyclerView.getParent() != null){
+            windowManager.removeView(recyclerView);
         }
         Log.d("TAG", "onDestroy: " + "floatService");
     }
