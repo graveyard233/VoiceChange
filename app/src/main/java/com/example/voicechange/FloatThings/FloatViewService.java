@@ -3,6 +3,7 @@ package com.example.voicechange.FloatThings;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
@@ -71,6 +72,8 @@ public class FloatViewService extends Service {
         };
         recyclerView.setLayoutManager(layoutManager);
         FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
+        adapter.setColor("#cddb8f");
+        adapter.setMgr(getAssets());
         recyclerView.setAdapter(adapter);
         windowManager.addView(recyclerView,layoutParams);
         recyclerView.setOnTouchListener(new FloatingOnTouch());
@@ -78,13 +81,13 @@ public class FloatViewService extends Service {
 
     private void initFloatText(){
         for (int i = 0; i < 3; i++) {
-            FloatText f1 = new FloatText("你好",i);
+            FloatText f1 = new FloatText("你好","张三");
             floatTextList.add(f1);
-            FloatText f2 = new FloatText("hello",i);
+            FloatText f2 = new FloatText("hello","李四");
             floatTextList.add(f2);
-            FloatText f3 = new FloatText("我知道了",i);
+            FloatText f3 = new FloatText("我知道了","王五");
             floatTextList.add(f3);
-            FloatText f4 = new FloatText("i know i know",i);
+            FloatText f4 = new FloatText("i know i know","九六");
             floatTextList.add(f4);
         }
     }

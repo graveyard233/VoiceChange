@@ -2,11 +2,20 @@ package com.example.voicechange.FloatThings;
 
 public class FloatText {
     String text;
+    String person;
     int text_id;
 
-    public FloatText(String text, int text_id) {
+    public FloatText(String text, String person) {
         this.text = text;
-        this.text_id = text_id;
+        this.person = person;
+    }
+
+    public String getPerson() {
+        return person;
+    }
+
+    public void setPerson(String person) {
+        this.person = person;
     }
 
     public String getText() {

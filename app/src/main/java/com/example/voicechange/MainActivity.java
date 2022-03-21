@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -119,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 SocketIOLink();//连接服务器
                 textView2 = findViewById(R.id.textView2);
                 textView2.setText(equip_id);
+                Typeface typeface = Typeface.createFromAsset(getAssets(),
+                        "ChuangKeTieJinGangTi-2.otf");
+                textView2.setTypeface(typeface);
                 break;
 
             case R.id.btn_login:
@@ -141,13 +146,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initFloatText(){
         for (int i = 0; i < 3; i++) {
-            FloatText f1 = new FloatText("你好",i);
+            FloatText f1 = new FloatText("你好","张三");
             floatTextList.add(f1);
-            FloatText f2 = new FloatText("hello",i);
+            FloatText f2 = new FloatText("hello","李四");
             floatTextList.add(f2);
-            FloatText f3 = new FloatText("我知道了",i);
+            FloatText f3 = new FloatText("我知道了","王五");
             floatTextList.add(f3);
-            FloatText f4 = new FloatText("i know i know",i);
+            FloatText f4 = new FloatText("i know i know","九六");
             floatTextList.add(f4);
         }
     }
