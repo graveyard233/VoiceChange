@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     MyRecyclerView myRecyclerView;
 
+    private Expand_updateAsrResultLayoutConfig myExpand;
+    String MyExpandString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +141,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_createFloat:
                 Intent intent2 = new Intent(this, FloatViewService.class);
+//                String NewMsg = "{\"font\":\"Source Han Sans CN\",\"font_weight\":\"0\",\"full_screen\"" +
+//                        ":\"0\",\"window_allow_move\":\"0\",\"apha\":\"17\",\"nameModule\":{\"location" +
+//                        "\":\"top \",\"color \":\"#D6FF0000 \",\"size \":\"56 \",\"show \":\"1 \"}," +
+//                        "\"contentModule \":{\"color \":\"#EFF8D406 \",\"focus_color \":\"#E812F806 " +
+//                        "\",\"focus_bg_color \":\"#A50576F7 \",\"size \":\"42 \",\"show \":\"1 \"},\"" +
+//                        "location \":\"top \",\"location_padding_left \":\"0.01 \",\"location_padding_right \"" +
+//                        ":\"0.02 \",\"location_padding_top \":\"0.55 \",\"location_padding_bottom \":" +
+//                        "\"0.03 \",\"rows \":\"10 \",\"bg_color \":\"null \",\"bg \":\"" +
+//                        "http: 172.16 .0 .160: 80 / uploads / bg / AB7BB05C22916C77D40FEA6AE49E2585.jpg \"}";
+                intent2.putExtra("DATA",MyExpandString);
                 startService(intent2);
                 break;
             case R.id.btn_showFloat:
@@ -146,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                startService(intent2);
                 break;
             case R.id.btn_closeFloat:
-//                Intent intent3 = new Intent(this, FloatViewService.class);
-//                stopService(intent3);
-                myRecyclerView.hideTheView();
+                Intent intent3 = new Intent(this, FloatViewService.class);
+                stopService(intent3);
+//                myRecyclerView.hideTheView();
                 break;
             default:
                 break;
@@ -235,10 +248,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             if (socketMsg1.getType().equals("updateAsrResultLayoutConfig")){//判断为更新布局
                                 String expand = socketMsg1.getExpand();
+                                MyExpandString = socketMsg1.getExpand();
                                 System.out.println("expand:" + expand);
                                 Expand_updateAsrResultLayoutConfig expand_updateLayout = //转换成更新布局对象
                                         gson_online.fromJson(expand,Expand_updateAsrResultLayoutConfig.class);
-                                System.out.println("expand's font" + expand_updateLayout.getFont());//打印字体
+
+                                myExpand = gson_online.fromJson(expand,Expand_updateAsrResultLayoutConfig.class);
+                                System.out.println("expand's font" + myExpand.getNameModule().getColor());//打印字体
                             }
                         }
                     }

@@ -19,6 +19,9 @@ import android.widget.Button;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.voicechange.Info.Expand_updateAsrResultLayoutConfig;
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,9 @@ public class FloatViewService extends Service {
     private List<FloatText> floatTextList = new ArrayList<>();
 
     MyRecyclerView myRecyclerView;
+
+    private Expand_updateAsrResultLayoutConfig expand;
+
 
     @Override
     public void onCreate() {
@@ -60,7 +66,23 @@ public class FloatViewService extends Service {
     }
 
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String data = intent.getStringExtra("DATA");
+        Gson gson = new Gson();
+        expand = gson.fromJson(data,Expand_updateAsrResultLayoutConfig.class);
+        Log.d("TAG", "onStartCommand: " + expand.getContentModule().getColor());
+//        System.out.println("onStartCommand:" + data);
+        if (myRecyclerView.getParent() != null){
+            windowManager.removeView(myRecyclerView);
+        }
+        showFloatWindow();
 
+        return super.onStartCommand(intent, flags, startId);
+
+
+
+    }
 
     private void showFloatWindow() {
 
@@ -79,6 +101,8 @@ public class FloatViewService extends Service {
 //        recyclerView.setAdapter(adapter);
 //        windowManager.addView(recyclerView,layoutParams);
 //        recyclerView.setOnTouchListener(new FloatingOnTouch());
+
+
         myRecyclerView = MyRecyclerView.get(getApplicationContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this){
             @Override
@@ -88,7 +112,12 @@ public class FloatViewService extends Service {
         };
         myRecyclerView.setLayoutManager(layoutManager);
         NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
-        adapter.setColor("#cddb8f");
+
+//        Log.e("TAG", "showFloatWindow: " + expand.getNameModule().getColor());
+        if (expand != null){
+            adapter.setColor(expand.getNameModule().getColor());
+        }
+
         myRecyclerView.setAdapter(adapter);
         windowManager.addView(myRecyclerView,layoutParams);
         myRecyclerView.setOnTouchListener(new FloatingOnTouch());

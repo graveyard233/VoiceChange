@@ -6,9 +6,15 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyRecyclerView extends RecyclerView {
+
+    private List<FloatText> floatTextList = new ArrayList<>();
 
     private volatile static MyRecyclerView mInstance;
 
@@ -38,6 +44,19 @@ public class MyRecyclerView extends RecyclerView {
     public void showTheView(){
         this.setVisibility(View.VISIBLE);
         System.out.println("show the view");
+    }
+
+    private void initFloatText(){
+        for (int i = 0; i < 3; i++) {
+            FloatText f1 = new FloatText("你好","张三");
+            floatTextList.add(f1);
+            FloatText f2 = new FloatText("hello","李四");
+            floatTextList.add(f2);
+            FloatText f3 = new FloatText("我知道了","王五");
+            floatTextList.add(f3);
+            FloatText f4 = new FloatText("i know i know","九六");
+            floatTextList.add(f4);
+        }
     }
 
     private MyRecyclerView(@NonNull Context context) {
