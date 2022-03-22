@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.voicechange.FloatThings.FloatText;
 import com.example.voicechange.FloatThings.FloatTextAdapter;
 import com.example.voicechange.FloatThings.FloatViewService;
+import com.example.voicechange.FloatThings.MyRecyclerView;
 import com.example.voicechange.Info.Expand_updateAsrResultLayoutConfig;
 import com.example.voicechange.Info.SocketMsg;
 import com.example.voicechange.Info.TerminalInfo;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button btn_showFloat;
     private Button btn_closeFloat;
+    private Button btn_createFloat;
 //https://blog.csdn.net/dongzhong1990/article/details/80512706
 
     public static final String joinGroup = "joinGroup";//加进组通知
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private List<FloatText> floatTextList = new ArrayList<>();
 
-
+    MyRecyclerView myRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_socketLink.setOnClickListener(this);
         btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(this);
+        btn_createFloat = findViewById(R.id.btn_createFloat);
+        btn_createFloat.setOnClickListener(this);
 
         btn_showFloat = findViewById(R.id.btn_showFloat);
         btn_showFloat.setOnClickListener(this);
@@ -102,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
         recyclerView.setAdapter(adapter);
 
+
+
+        myRecyclerView = MyRecyclerView.get(this);
     }
 
     @Override
@@ -129,14 +136,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_login:
                 postAsync_Login();//登录的同时进行加组
                 break;
-            case R.id.btn_showFloat:
-
+            case R.id.btn_createFloat:
                 Intent intent2 = new Intent(this, FloatViewService.class);
                 startService(intent2);
                 break;
+            case R.id.btn_showFloat:
+                myRecyclerView.showTheView();
+//                Intent intent2 = new Intent(this, FloatViewService.class);
+//                startService(intent2);
+                break;
             case R.id.btn_closeFloat:
-                Intent intent3 = new Intent(this, FloatViewService.class);
-                stopService(intent3);
+//                Intent intent3 = new Intent(this, FloatViewService.class);
+//                stopService(intent3);
+                myRecyclerView.hideTheView();
                 break;
             default:
                 break;

@@ -34,6 +34,8 @@ public class FloatViewService extends Service {
     private RecyclerView recyclerView;
     private List<FloatText> floatTextList = new ArrayList<>();
 
+    MyRecyclerView myRecyclerView;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,20 +65,33 @@ public class FloatViewService extends Service {
     private void showFloatWindow() {
 
         initFloatText();
-        recyclerView = new RecyclerView(getApplicationContext());
+//        recyclerView = new RecyclerView(getApplicationContext());
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this){
+//            @Override
+//            public boolean canScrollVertically() {
+//                return false;
+//            }
+//        };
+//        recyclerView.setLayoutManager(layoutManager);
+//        FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
+//        adapter.setColor("#cddb8f");
+//        adapter.setMgr(getAssets());
+//        recyclerView.setAdapter(adapter);
+//        windowManager.addView(recyclerView,layoutParams);
+//        recyclerView.setOnTouchListener(new FloatingOnTouch());
+        myRecyclerView = MyRecyclerView.get(getApplicationContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this){
             @Override
             public boolean canScrollVertically() {
                 return false;
             }
         };
-        recyclerView.setLayoutManager(layoutManager);
-        FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
+        myRecyclerView.setLayoutManager(layoutManager);
+        NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
         adapter.setColor("#cddb8f");
-        adapter.setMgr(getAssets());
-        recyclerView.setAdapter(adapter);
-        windowManager.addView(recyclerView,layoutParams);
-        recyclerView.setOnTouchListener(new FloatingOnTouch());
+        myRecyclerView.setAdapter(adapter);
+        windowManager.addView(myRecyclerView,layoutParams);
+        myRecyclerView.setOnTouchListener(new FloatingOnTouch());
     }
 
     private void initFloatText(){
@@ -114,7 +129,8 @@ public class FloatViewService extends Service {
                     y = nowY;
                     layoutParams.x = layoutParams.x + movedX;
                     layoutParams.y = layoutParams.y + movedY;
-                    windowManager.updateViewLayout(recyclerView,layoutParams);
+//                    windowManager.updateViewLayout(recyclerView,layoutParams);
+                    windowManager.updateViewLayout(myRecyclerView,layoutParams);
                     break;
                 default:
                     break;
@@ -137,8 +153,11 @@ public class FloatViewService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (recyclerView.getParent() != null){
-            windowManager.removeView(recyclerView);
+//        if (recyclerView.getParent() != null){
+//            windowManager.removeView(recyclerView);
+//        }
+        if (myRecyclerView.getParent() != null){
+            windowManager.removeView(myRecyclerView);
         }
         Log.d("TAG", "onDestroy: " + "floatService");
     }
