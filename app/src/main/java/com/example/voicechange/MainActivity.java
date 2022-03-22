@@ -141,15 +141,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_createFloat:
                 Intent intent2 = new Intent(this, FloatViewService.class);
-//                String NewMsg = "{\"font\":\"Source Han Sans CN\",\"font_weight\":\"0\",\"full_screen\"" +
-//                        ":\"0\",\"window_allow_move\":\"0\",\"apha\":\"17\",\"nameModule\":{\"location" +
-//                        "\":\"top \",\"color \":\"#D6FF0000 \",\"size \":\"56 \",\"show \":\"1 \"}," +
-//                        "\"contentModule \":{\"color \":\"#EFF8D406 \",\"focus_color \":\"#E812F806 " +
-//                        "\",\"focus_bg_color \":\"#A50576F7 \",\"size \":\"42 \",\"show \":\"1 \"},\"" +
-//                        "location \":\"top \",\"location_padding_left \":\"0.01 \",\"location_padding_right \"" +
-//                        ":\"0.02 \",\"location_padding_top \":\"0.55 \",\"location_padding_bottom \":" +
-//                        "\"0.03 \",\"rows \":\"10 \",\"bg_color \":\"null \",\"bg \":\"" +
-//                        "http: 172.16 .0 .160: 80 / uploads / bg / AB7BB05C22916C77D40FEA6AE49E2585.jpg \"}";
                 intent2.putExtra("DATA",MyExpandString);
                 startService(intent2);
                 break;
@@ -254,7 +245,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         gson_online.fromJson(expand,Expand_updateAsrResultLayoutConfig.class);
 
                                 myExpand = gson_online.fromJson(expand,Expand_updateAsrResultLayoutConfig.class);
-                                System.out.println("expand's font" + myExpand.getNameModule().getColor());//打印字体
+                                System.out.println("expand's font" + myExpand.getNameModule().getColor());//打印颜色
+
+                                Intent intent2 = new Intent(getApplicationContext(), FloatViewService.class);//传递更新的数值，让service重新绘制
+                                intent2.putExtra("DATA",MyExpandString);
+                                startService(intent2);
+
+
                             }
                         }
                     }

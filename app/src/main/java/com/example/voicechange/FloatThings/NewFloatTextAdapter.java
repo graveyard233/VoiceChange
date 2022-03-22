@@ -3,6 +3,7 @@ package com.example.voicechange.FloatThings;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.voicechange.Info.Expand_updateAsrResultLayoutConfig;
 import com.example.voicechange.R;
 
 import java.util.List;
@@ -24,6 +26,12 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
     private String isBold;
 
     private AssetManager mgr;
+
+    private Expand_updateAsrResultLayoutConfig expand;
+
+    public void setExpand(Expand_updateAsrResultLayoutConfig expand) {
+        this.expand = expand;
+    }
 
     public void setColor(String color) {
         this.color = color;
@@ -80,8 +88,15 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
         //设置说话人的部分
         holder.floatTextPerson.setText(floatText.getPerson());
-        if (color != null){
-            holder.floatTextView.setTextColor(Color.parseColor(color));
+        if (expand != null){
+            //修改字体颜色
+            holder.floatTextPerson.setTextColor(Color.parseColor(expand.getNameModule().getColor()));
+            //修改字体大小,设置为px
+            holder.floatTextPerson.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    Float.parseFloat(expand.getNameModule().getSize()));
+            if (expand.getFont_weight().equals("1")){
+                holder.floatTextPerson.getPaint().setFakeBoldText(true);
+            }
         }
     }
 

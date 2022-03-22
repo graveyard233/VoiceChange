@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Adapter;
 import android.widget.Button;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +46,7 @@ public class FloatViewService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.e("TAG", "service is onCreate: ");
         isStarted = true;
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         layoutParams = new WindowManager.LayoutParams();
@@ -80,29 +82,11 @@ public class FloatViewService extends Service {
 
         return super.onStartCommand(intent, flags, startId);
 
-
-
     }
 
     private void showFloatWindow() {
 
         initFloatText();
-//        recyclerView = new RecyclerView(getApplicationContext());
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this){
-//            @Override
-//            public boolean canScrollVertically() {
-//                return false;
-//            }
-//        };
-//        recyclerView.setLayoutManager(layoutManager);
-//        FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
-//        adapter.setColor("#cddb8f");
-//        adapter.setMgr(getAssets());
-//        recyclerView.setAdapter(adapter);
-//        windowManager.addView(recyclerView,layoutParams);
-//        recyclerView.setOnTouchListener(new FloatingOnTouch());
-
-
         myRecyclerView = MyRecyclerView.get(getApplicationContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this){
             @Override
@@ -111,16 +95,25 @@ public class FloatViewService extends Service {
             }
         };
         myRecyclerView.setLayoutManager(layoutManager);
-        NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
-
-//        Log.e("TAG", "showFloatWindow: " + expand.getNameModule().getColor());
-        if (expand != null){
-            adapter.setColor(expand.getNameModule().getColor());
-        }
-
+//        NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
+//
+//        if (expand != null){
+//            adapter.setColor(expand.getNameModule().getColor());
+//        }
+//
+//        myRecyclerView.setAdapter(adapter);
+        NewFloatTextAdapter adapter = initAdapter();
         myRecyclerView.setAdapter(adapter);
         windowManager.addView(myRecyclerView,layoutParams);
         myRecyclerView.setOnTouchListener(new FloatingOnTouch());
+    }
+
+    private NewFloatTextAdapter initAdapter(){
+        NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
+        if (expand != null){
+            adapter.setExpand(expand);
+        }
+        return adapter;
     }
 
     private void initFloatText(){
