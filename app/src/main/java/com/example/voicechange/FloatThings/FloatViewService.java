@@ -57,7 +57,10 @@ public class FloatViewService extends Service {
         }
         layoutParams.format = PixelFormat.RGBA_8888;
         layoutParams.gravity = Gravity.LEFT | Gravity.TOP;
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+//                | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+
 
         layoutParams.width = windowManager.getDefaultDisplay().getWidth();//设置悬浮框的宽度为手机的宽度
         layoutParams.height = 300;
@@ -78,6 +81,38 @@ public class FloatViewService extends Service {
         if (myRecyclerView.getParent() != null){
             windowManager.removeView(myRecyclerView);
         }
+
+        //设置是否全屏
+        if (expand.getFull_screen().equals("1")){
+            layoutParams.height = windowManager.getDefaultDisplay().getHeight();
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;//设置悬浮窗下面的控件可按
+        } else { //暂时重置为悬浮框放在最底下
+            layoutParams.width = windowManager.getDefaultDisplay().getWidth();//设置悬浮框的宽度为手机的宽度
+            layoutParams.height = 600;
+            layoutParams.x = 0;
+            layoutParams.y = windowManager.getDefaultDisplay().getHeight();//悬浮窗生成位置放在最底下
+            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        }
+
+        //根据expand设置悬浮框位置
+        //悬浮框宽度
+        double true_width = layoutParams.width;
+        layoutParams.width = (int) ((1.0 - Double.parseDouble(expand.getLocation_padding_left())
+                        - Double.parseDouble(expand.getLocation_padding_right()))
+                        * windowManager.getDefaultDisplay().getWidth());
+        double true_height = layoutParams.height;
+        layoutParams.height = (int) ((1.0 - Double.parseDouble(expand.getLocation_padding_top())
+                - Double.parseDouble(expand.getLocation_padding_bottom()))
+                * windowManager.getDefaultDisplay().getHeight());
+
+        double true_x = windowManager.getDefaultDisplay().getWidth() * Double.parseDouble(expand.getLocation_padding_left());
+        layoutParams.x = (int) true_x;
+        double true_y = windowManager.getDefaultDisplay().getHeight() * Double.parseDouble(expand.getLocation_padding_top());
+        layoutParams.y = (int) true_y;
+
         showFloatWindow();
 
         return super.onStartCommand(intent, flags, startId);
@@ -105,7 +140,11 @@ public class FloatViewService extends Service {
         NewFloatTextAdapter adapter = initAdapter();
         myRecyclerView.setAdapter(adapter);
         windowManager.addView(myRecyclerView,layoutParams);
-        myRecyclerView.setOnTouchListener(new FloatingOnTouch());
+        //设置是否允许移动
+        if (expand != null && expand.getWindow_allow_move().equals("1")){
+            myRecyclerView.setOnTouchListener(new FloatingOnTouch());
+        }
+
     }
 
     private NewFloatTextAdapter initAdapter(){
@@ -117,8 +156,14 @@ public class FloatViewService extends Service {
     }
 
     private void initFloatText(){
+        String test = "正在转写，请耐心等待...";
         for (int i = 0; i < 3; i++) {
-            FloatText f1 = new FloatText("你好","张三");
+            FloatText f1 = new FloatText("炉石的判断可以做得很复杂，比如截图判断；但也有很简单的判断，呼出esc，有个菜单栏，假如你匹配到，进入对战，" +
+                    "则会有一个认输按键，这个认输是红色的且坐标固定，但注意，当鼠标悬浮在上面时，亮度会加一层金色；假如下棋输掉，则认输按键消失，则红色没有。" +
+                    "利用这一点来判断是否进入和输掉。其实选完英雄也可以判断其他玩家是否也选好英雄，对比随便一处的颜色即可(选英雄时整个界面灰度很高)。" +
+                    "版权声明：本文为CSDN博主「graveyard233」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。" +
+                    "原文链接：https://blog.csdn.net/graveyard233/article/details/109732042" ,
+                    "张三");
             floatTextList.add(f1);
             FloatText f2 = new FloatText("hello","李四");
             floatTextList.add(f2);

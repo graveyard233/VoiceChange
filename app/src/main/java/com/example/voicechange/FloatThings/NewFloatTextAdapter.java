@@ -73,9 +73,22 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
     public void onBindViewHolder(@NonNull NewFloatTextAdapter.ViewHolder holder, int position) {
         FloatText floatText = myFloatTextList.get(position);
 
+        //全局部分
+        //字体粗细
+        if (expand.getFont_weight().equals("1")){
+            holder.floatTextPerson.getPaint().setFakeBoldText(true);
+            holder.floatTextView.getPaint().setFakeBoldText(true);
+        } else {
+            holder.floatTextPerson.getPaint().setFakeBoldText(false);
+            holder.floatTextView.getPaint().setFakeBoldText(false);
+        }
+        //设置最大行数
+        if (expand.getRows() != null){
+            holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
+        }
+
         //语音文字部分
         holder.floatTextView.setText(floatText.getText());
-        holder.floatTextView.getPaint().setFakeBoldText(true);//字体加粗
         if (mgr != null){//修改字体
             Typeface typeface = Typeface.createFromAsset(mgr,
                     "ChuangKeTieJinGangTi-2.otf");
@@ -94,9 +107,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
             //修改字体大小,设置为px
             holder.floatTextPerson.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     Float.parseFloat(expand.getNameModule().getSize()));
-            if (expand.getFont_weight().equals("1")){
-                holder.floatTextPerson.getPaint().setFakeBoldText(true);
-            }
+
         }
     }
 

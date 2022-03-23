@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -108,10 +109,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(layoutManager);
         FloatTextAdapter adapter = new FloatTextAdapter(floatTextList);
         recyclerView.setAdapter(adapter);
+        recyclerView.getBackground().mutate().setAlpha(150);
 
 
 
         myRecyclerView = MyRecyclerView.get(this);
+
+        TextView span = findViewById(R.id.spantext);
+
     }
 
     @Override
@@ -250,6 +255,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Intent intent2 = new Intent(getApplicationContext(), FloatViewService.class);//传递更新的数值，让service重新绘制
                                 intent2.putExtra("DATA",MyExpandString);
                                 startService(intent2);
+
+                                if (expand_updateLayout.getBg_color() != null){//设置背景颜色
+                                    myRecyclerView.setBackgroundColor(Color.parseColor(expand_updateLayout.getBg_color()));
+                                }
+                                //设置透明度
+                                myRecyclerView.getBackground().mutate().setAlpha(Integer.parseInt(expand_updateLayout.getApha()));
+
 
 
                             }
