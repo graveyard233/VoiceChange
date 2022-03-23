@@ -3,6 +3,11 @@ package com.example.voicechange.FloatThings;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,13 +91,46 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
         if (expand.getRows() != null){
             holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
         }
+//        if (mgr != null){//修改字体
+////            Typeface typeface = Typeface.createFromAsset(mgr,
+////                    "ChuangKeTieJinGangTi-2.otf");
+////            holder.floatTextView.setTypeface(typeface);
+//            Log.d("TAG", "让我看看有没有asset");
+//            if (expand.getFont().equals("kaiTi")){
+//                Typeface typeface1 = Typeface.createFromAsset(mgr,
+//                        "STKAITI.TTF");
+//                holder.floatTextView.setTypeface(typeface1);
+//            } else if (expand.getFont().equals("SimSun")){
+//                Typeface typeface1 = Typeface.createFromAsset(mgr,
+//                        "simsun.ttc");
+//                holder.floatTextView.setTypeface(typeface1);
+//            } else if (expand.getFont().equals("Source Han Sans CN")){
+//                Typeface typeface1 = Typeface.createFromAsset(mgr,
+//                        "simhei.ttf");
+//                holder.floatTextView.setTypeface(typeface1);
+//            }
+//            else
+//                System.out.println("没有");
+//        }
 
         //语音文字部分
         holder.floatTextView.setText(floatText.getText());
-        if (mgr != null){//修改字体
-            Typeface typeface = Typeface.createFromAsset(mgr,
-                    "ChuangKeTieJinGangTi-2.otf");
-            holder.floatTextView.setTypeface(typeface);
+        //设置转写中的文字
+        if (floatText.getOn_change_text() != null){
+            SpannableString ss = new SpannableString(floatText.getOn_change_text());
+            ss.setSpan(new ForegroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_color())),
+                    0,floatText.getOn_change_text().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ss.setSpan(new BackgroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_bg_color())),
+                    0,floatText.getOn_change_text().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.floatTextView.append(ss);
+        }
+
+
+        if (expand != null){
+            //修改字体大小,设置为px
+            holder.floatTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    Float.parseFloat(expand.getContentModule().getSize()));
+            holder.floatTextView.setTextColor(Color.parseColor(expand.getContentModule().getColor()));
         }
 
 

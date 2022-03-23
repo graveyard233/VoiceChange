@@ -159,11 +159,12 @@ public class FloatViewService extends Service {
         String test = "正在转写，请耐心等待...";
         for (int i = 0; i < 3; i++) {
             FloatText f1 = new FloatText("炉石的判断可以做得很复杂，比如截图判断；但也有很简单的判断，呼出esc，有个菜单栏，假如你匹配到，进入对战，" +
-                    "则会有一个认输按键，这个认输是红色的且坐标固定，但注意，当鼠标悬浮在上面时，亮度会加一层金色；假如下棋输掉，则认输按键消失，则红色没有。" +
-                    "利用这一点来判断是否进入和输掉。其实选完英雄也可以判断其他玩家是否也选好英雄，对比随便一处的颜色即可(选英雄时整个界面灰度很高)。" +
-                    "版权声明：本文为CSDN博主「graveyard233」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。" +
-                    "原文链接：https://blog.csdn.net/graveyard233/article/details/109732042" ,
-                    "张三");
+                    "则会有一个认输按键，这个认输是红色的且坐标固定，但注意，当鼠标悬浮在上面时，亮度会加一层金色；假如下棋输掉，则认输按键消失，则红色没有。" ,
+//                    "利用这一点来判断是否进入和输掉。其实选完英雄也可以判断其他玩家是否也选好英雄，对比随便一处的颜色即可(选英雄时整个界面灰度很高)。" +
+//                    "版权声明：本文为CSDN博主「graveyard233」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。" +
+//                    "原文链接：https://blog.csdn.net/graveyard233/article/details/109732042" ,
+                    "张三",
+                    test);
             floatTextList.add(f1);
             FloatText f2 = new FloatText("hello","李四");
             floatTextList.add(f2);

@@ -10,6 +10,9 @@ import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -116,7 +119,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myRecyclerView = MyRecyclerView.get(this);
 
         TextView span = findViewById(R.id.spantext);
-
+        String aaa = "abcdefghijk";
+        SpannableString ss = new SpannableString(aaa);
+        //Color.parseColor("#9198ae")
+        ss.setSpan(new ForegroundColorSpan(Color.RED),
+                0,aaa.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.append(ss);
     }
 
     @Override
@@ -147,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_createFloat:
                 Intent intent2 = new Intent(this, FloatViewService.class);
                 intent2.putExtra("DATA",MyExpandString);
+
                 startService(intent2);
                 break;
             case R.id.btn_showFloat:
@@ -261,7 +270,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                                 //设置透明度
                                 myRecyclerView.getBackground().mutate().setAlpha(Integer.parseInt(expand_updateLayout.getApha()));
+                                if (expand_updateLayout.getFont() != null){
+                                    if (expand_updateLayout.getFont().equals("kaiTi")){
+                                        Typeface typeface = Typeface.createFromAsset(getAssets(),"STKAITI.TTF");
 
+                                    }
+                                }
 
 
                             }
