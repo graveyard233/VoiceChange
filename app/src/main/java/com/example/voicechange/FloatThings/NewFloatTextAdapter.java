@@ -1,5 +1,6 @@
 package com.example.voicechange.FloatThings;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -91,27 +92,24 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
         if (expand.getRows() != null){
             holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
         }
-//        if (mgr != null){//修改字体
-////            Typeface typeface = Typeface.createFromAsset(mgr,
-////                    "ChuangKeTieJinGangTi-2.otf");
-////            holder.floatTextView.setTypeface(typeface);
-//            Log.d("TAG", "让我看看有没有asset");
-//            if (expand.getFont().equals("kaiTi")){
-//                Typeface typeface1 = Typeface.createFromAsset(mgr,
-//                        "STKAITI.TTF");
-//                holder.floatTextView.setTypeface(typeface1);
-//            } else if (expand.getFont().equals("SimSun")){
-//                Typeface typeface1 = Typeface.createFromAsset(mgr,
-//                        "simsun.ttc");
-//                holder.floatTextView.setTypeface(typeface1);
-//            } else if (expand.getFont().equals("Source Han Sans CN")){
-//                Typeface typeface1 = Typeface.createFromAsset(mgr,
-//                        "simhei.ttf");
-//                holder.floatTextView.setTypeface(typeface1);
-//            }
-//            else
-//                System.out.println("没有");
-//        }
+        if (expand != null && mgr!= null){//修改字体
+            Log.d("TAG", "开始修改字体");
+            if (expand.getFont().equals("kaiTi")){
+                Typeface typeface1 = Typeface.createFromAsset(mgr,
+                        "STKAITI.TTF");
+                holder.floatTextView.setTypeface(typeface1);
+            } else if (expand.getFont().equals("SimSun")){
+                Typeface typeface1 = Typeface.createFromAsset(mgr,
+                        "simsun.ttc");
+                holder.floatTextView.setTypeface(typeface1);
+            } else if (expand.getFont().equals("Source Han Sans CN")){
+                Typeface typeface1 = Typeface.createFromAsset(mgr,
+                        "simhei.ttf");
+                holder.floatTextView.setTypeface(typeface1);
+            }
+            else
+                System.out.println("没有");
+        }
 
         //语音文字部分
         holder.floatTextView.setText(floatText.getText());

@@ -151,6 +151,7 @@ public class FloatViewService extends Service {
         NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
         if (expand != null){
             adapter.setExpand(expand);
+            adapter.setMgr(getAssets());
         }
         return adapter;
     }
