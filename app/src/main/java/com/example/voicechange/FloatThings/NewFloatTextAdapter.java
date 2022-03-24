@@ -17,6 +17,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -149,36 +150,52 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
             final SpannableString s2 = new SpannableString(floatText.getOn_change_text());
 
             //将第一段变成正在转写的样式
-            final ForegroundColorSpan colorSpan1 = new ForegroundColorSpan(
-                    Color.parseColor(expand.getContentModule().getFocus_color()));
-            final BackgroundColorSpan backgroundColorSpan1 = new BackgroundColorSpan(
-                    Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+//            final ForegroundColorSpan colorSpan1 = new ForegroundColorSpan(
+//                    Color.parseColor(expand.getContentModule().getFocus_color()));
+//            final BackgroundColorSpan backgroundColorSpan1 = new BackgroundColorSpan(
+//                    Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+//
+//            s1.setSpan(colorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            s1.setSpan(backgroundColorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            holder.floatTextView.append(s1);
+//
+//            Editable editable = (Editable) holder.floatTextView.getEditableText();
 
-            s1.setSpan(colorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s1.setSpan(backgroundColorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            //复制出来的
+            ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
+                            Color.parseColor(expand.getContentModule().getColor()));
+            s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            s1.removeSpan(backgroundColorSpan1);
+
             holder.floatTextView.append(s1);
 
-            final Editable editable = (Editable) holder.floatTextView.getEditableText();
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
-                            Color.parseColor(expand.getContentModule().getColor()));
-                    s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    s1.removeSpan(backgroundColorSpan1);
-
-                    editable.replace(0,s1.length(),s1);
-
-                    ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
+            ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
                             Color.parseColor(expand.getContentModule().getFocus_color()));
-                    BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
+            BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
                             Color.parseColor(expand.getContentModule().getFocus_bg_color()));
-                    s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    holder.floatTextView.append(s2);
-                }
-            },2000);
+            s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.floatTextView.append(s2);
+
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getColor()));
+//                    s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    s1.removeSpan(backgroundColorSpan1);
+//
+//                    editable.replace(0,s1.length(),s1);
+//
+//                    ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getFocus_color()));
+//                    BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+//                    s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    holder.floatTextView.append(s2);
+//                }
+//            },500);
         }
 
         //修改字体大小,设置为px,并且修改颜色
@@ -187,6 +204,26 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                     Float.parseFloat(expand.getContentModule().getSize()));
         }
 
+        //我自己的删除方法
+//        if (expand != null){
+//            final Editable editable2 = (Editable) holder.floatTextView.getEditableText();
+//            holder.floatTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                @Override
+//                public void onGlobalLayout() {
+//                    int Lines = holder.floatTextView.getLineCount();
+//                    int need_lines = Integer.parseInt(expand.getRows());
+//                    int line_to_move = Lines - need_lines + 1;
+//                    if (line_to_move > 0){
+//                        for (int i = 0; i < line_to_move; i++) {
+//                            int lineStart = holder.floatTextView.getLayout().getLineStart(0);
+//                            int lineEnd = holder.floatTextView.getLayout().getLineEnd(0);
+//                            editable2.delete(lineStart,lineEnd);
+//                        }
+//                    }
+//                    holder.floatTextView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                }
+//            });
+//        }
 
 
 

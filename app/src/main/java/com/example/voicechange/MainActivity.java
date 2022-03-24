@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Expand_updateAsrResultLayoutConfig myExpand;
     String MyExpandString;
 
+    TextView testText;
+    int Lines;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         myRecyclerView = MyRecyclerView.get(this);
+        testText = findViewById(R.id.testText);
+
+        testText.append("我正在开发一个应用程序，它经常需要在TextView中向用户显示结果，就像某种日志一样。 该应用程序运行良好，它在TextView中显示结果，但只要它继续运行并添加行，由于TextView的字符长度，应用程序变慢并崩溃。 我想知道android API是否提供了强制TexView自动删除引入的最旧行以便为新的行腾出空间的任何方法。");
+        final Editable editable = (Editable) testText.getEditableText();
+        testText.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.e(TAG, "onGlobalLayout: 行数: " + testText.getLineCount());
+                Lines = testText.getLineCount();
+                int LinetoMove = Lines - 3;
+                System.out.println("LinetoMove: " + LinetoMove);
+
+                if (LinetoMove > 0 ){
+                    for (int i = 0; i < LinetoMove; i++) {
+
+                        int lineStart = testText.getLayout().getLineStart(0);
+                        int lineEnd = testText.getLayout().getLineEnd(0);
+                        if (editable != null){
+                            System.out.println("开始删除");
+                            editable.delete(lineStart,lineEnd);
+                        }
+                        else System.out.println("edit为空");
+
+                    }
+                }
+                testText.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+
+            }
+        });
+
 
 
 
@@ -168,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                startService(intent2);
                 break;
             case R.id.btn_closeFloat:
-
                 Intent intent3 = new Intent(this, FloatViewService.class);
                 stopService(intent3);
                 myRecyclerView.hideTheView();
