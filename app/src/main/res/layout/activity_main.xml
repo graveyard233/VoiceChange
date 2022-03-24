@@ -61,7 +61,8 @@
 
     <TextView
         android:id="@+id/spantext"
-        android:text="我的文字"
+        android:text="
+第二天下午，我如愿来到了海边。好不热闹！到处都是人们的说话声、喧闹声、嬉笑声。我望向让我魂牵梦萦的大海，在水天相接的远处，它们形成了一个个扁扁的波形，就像一块天蓝色的幕布下有一根筷子在快速移动，鼓起了一块；再近一些，它们就变成了高耸的波浪，调皮地卷起嬉闹的人们，拍到岸上；到了岸边，海浪仿佛没了力气，变成了一股急流，然后一点点地减慢速度，最后化成一滩海水，退走了。"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

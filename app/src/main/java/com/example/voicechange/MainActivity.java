@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Expand_updateAsrResultLayoutConfig myExpand;
     String MyExpandString;
 
+    int CountLine = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,13 +121,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         myRecyclerView = MyRecyclerView.get(this);
 
-        TextView span = findViewById(R.id.spantext);
-        String aaa = "abcdefghijk";
-        SpannableString ss = new SpannableString(aaa);
-        //Color.parseColor("#9198ae")
-        ss.setSpan(new ForegroundColorSpan(Color.RED),
-                0,aaa.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        span.append(ss);
+        TextView testDelete = findViewById(R.id.spantext);
+
+        testDelete.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Log.e(TAG, "onGlobalLayout: 行数" + testDelete.getLineCount());
+                if (testDelete.getLineCount() > 0){
+                    testDelete.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+
     }
 
     @Override

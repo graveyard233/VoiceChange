@@ -167,11 +167,11 @@ public class FloatViewService extends Service {
                     "张三",
                     test);
             floatTextList.add(f1);
-            FloatText f2 = new FloatText("hello","李四");
+            FloatText f2 = new FloatText("hello","李四",test);
             floatTextList.add(f2);
-            FloatText f3 = new FloatText("我知道了","王五");
+            FloatText f3 = new FloatText("我知道了","王五",test);
             floatTextList.add(f3);
-            FloatText f4 = new FloatText("i know i know","九六");
+            FloatText f4 = new FloatText("i know i know","九六",test);
             floatTextList.add(f4);
         }
     }
@@ -187,7 +187,6 @@ public class FloatViewService extends Service {
                 case MotionEvent.ACTION_DOWN:
                     x = (int) motionEvent.getRawX();
                     y = (int) motionEvent.getRawY();
-//                    Log.e("TAG", "ACTION_DOWN: " + x +" , " + y);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int nowX = (int) motionEvent.getRawX();
@@ -198,7 +197,6 @@ public class FloatViewService extends Service {
                     y = nowY;
                     layoutParams.x = layoutParams.x + movedX;
                     layoutParams.y = layoutParams.y + movedY;
-//                    windowManager.updateViewLayout(recyclerView,layoutParams);
                     windowManager.updateViewLayout(myRecyclerView,layoutParams);
                     break;
                 default:

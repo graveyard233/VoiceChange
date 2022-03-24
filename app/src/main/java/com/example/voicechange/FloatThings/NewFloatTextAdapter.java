@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -81,18 +83,22 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
         //全局部分
         //字体粗细
-        if (expand.getFont_weight().equals("1")){
-            holder.floatTextPerson.getPaint().setFakeBoldText(true);
-            holder.floatTextView.getPaint().setFakeBoldText(true);
-        } else {
-            holder.floatTextPerson.getPaint().setFakeBoldText(false);
-            holder.floatTextView.getPaint().setFakeBoldText(false);
+        if (expand != null){
+            if (expand.getFont_weight().equals("1")){
+                holder.floatTextPerson.getPaint().setFakeBoldText(true);
+                holder.floatTextView.getPaint().setFakeBoldText(true);
+            } else {
+                holder.floatTextPerson.getPaint().setFakeBoldText(false);
+                holder.floatTextView.getPaint().setFakeBoldText(false);
+            }
         }
+
         //设置最大行数
-        if (expand.getRows() != null){
+        if (expand != null){
             holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
         }
-        if (expand != null && mgr!= null){//修改字体
+        //修改字体
+        if (expand != null && mgr!= null){
             Log.d("TAG", "开始修改字体");
             if (expand.getFont().equals("kaiTi")){
                 Typeface typeface1 = Typeface.createFromAsset(mgr,
@@ -111,24 +117,38 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                 System.out.println("没有");
         }
 
+
         //语音文字部分
-        holder.floatTextView.setText(floatText.getText());
-        //设置转写中的文字
-        if (floatText.getOn_change_text() != null){
-            SpannableString ss = new SpannableString(floatText.getOn_change_text());
-            ss.setSpan(new ForegroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_color())),
-                    0,floatText.getOn_change_text().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            ss.setSpan(new BackgroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_bg_color())),
-                    0,floatText.getOn_change_text().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.floatTextView.append(ss);
+        if (expand!=null && floatText.getOn_change_text() != null && floatText.getText() != null){
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+            StringBuffer stringBuffer = new StringBuffer();
+            stringBuffer.append(floatText.getText());
+            stringBuilder.append(stringBuffer);
+            stringBuilder.append(floatText.getOn_change_text());
+            //设置已经转好的文字
+            ForegroundColorSpan colorSpan1 = new
+                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getColor()));
+            stringBuilder.setSpan(colorSpan1,0,floatText.getText().length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+            //设置转写中的文字
+            ForegroundColorSpan colorSpan2 = new
+                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_color()));
+            stringBuilder.setSpan(colorSpan2,
+                    floatText.getText().length(),
+                    floatText.getOn_change_text().length() + floatText.getText().length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_bg_color())),
+                    floatText.getText().length(),
+                    floatText.getOn_change_text().length() + floatText.getText().length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.floatTextView.setText(stringBuilder);
         }
 
-
+        //修改字体大小,设置为px,并且修改颜色
         if (expand != null){
-            //修改字体大小,设置为px
             holder.floatTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     Float.parseFloat(expand.getContentModule().getSize()));
-            holder.floatTextView.setTextColor(Color.parseColor(expand.getContentModule().getColor()));
         }
 
 
