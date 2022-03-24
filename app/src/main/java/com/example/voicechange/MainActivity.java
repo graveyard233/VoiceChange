@@ -5,13 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -88,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Expand_updateAsrResultLayoutConfig myExpand;
     String MyExpandString;
 
-    int CountLine = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,19 +125,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         myRecyclerView = MyRecyclerView.get(this);
 
-        TextView testDelete = findViewById(R.id.spantext);
 
-        testDelete.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Log.e(TAG, "onGlobalLayout: 行数" + testDelete.getLineCount());
-                if (testDelete.getLineCount() > 0){
-                    testDelete.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
 
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -172,9 +168,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                startService(intent2);
                 break;
             case R.id.btn_closeFloat:
+
                 Intent intent3 = new Intent(this, FloatViewService.class);
                 stopService(intent3);
-//                myRecyclerView.hideTheView();
+                myRecyclerView.hideTheView();
                 break;
             default:
                 break;
@@ -194,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             floatTextList.add(f4);
         }
     }
+
+
+
 
     //socket连接服务器，并且监听服务器的返回消息
     public void SocketIOLink(){

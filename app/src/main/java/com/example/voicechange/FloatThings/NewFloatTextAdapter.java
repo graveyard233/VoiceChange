@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -120,29 +122,63 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
         //语音文字部分
         if (expand!=null && floatText.getOn_change_text() != null && floatText.getText() != null){
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append(floatText.getText());
-            stringBuilder.append(stringBuffer);
-            stringBuilder.append(floatText.getOn_change_text());
-            //设置已经转好的文字
-            ForegroundColorSpan colorSpan1 = new
-                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getColor()));
-            stringBuilder.setSpan(colorSpan1,0,floatText.getText().length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+//            StringBuffer stringBuffer = new StringBuffer();
+//            stringBuffer.append(floatText.getText());
+//            stringBuilder.append(stringBuffer);
+//            stringBuilder.append(floatText.getOn_change_text());
+//            //设置已经转好的文字
+//            ForegroundColorSpan colorSpan1 = new
+//                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getColor()));
+//            stringBuilder.setSpan(colorSpan1,0,floatText.getText().length(),
+//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//            //设置转写中的文字
+//            ForegroundColorSpan colorSpan2 = new
+//                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_color()));
+//            stringBuilder.setSpan(colorSpan2,
+//                    floatText.getText().length(),
+//                    floatText.getOn_change_text().length() + floatText.getText().length(),
+//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            stringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_bg_color())),
+//                    floatText.getText().length(),
+//                    floatText.getOn_change_text().length() + floatText.getText().length(),
+//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            holder.floatTextView.setText(stringBuilder);
+            final SpannableString s1 = new SpannableString(floatText.getText());
+            final SpannableString s2 = new SpannableString(floatText.getOn_change_text());
 
-            //设置转写中的文字
-            ForegroundColorSpan colorSpan2 = new
-                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_color()));
-            stringBuilder.setSpan(colorSpan2,
-                    floatText.getText().length(),
-                    floatText.getOn_change_text().length() + floatText.getText().length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            stringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_bg_color())),
-                    floatText.getText().length(),
-                    floatText.getOn_change_text().length() + floatText.getText().length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.floatTextView.setText(stringBuilder);
+            //将第一段变成正在转写的样式
+            final ForegroundColorSpan colorSpan1 = new ForegroundColorSpan(
+                    Color.parseColor(expand.getContentModule().getFocus_color()));
+            final BackgroundColorSpan backgroundColorSpan1 = new BackgroundColorSpan(
+                    Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+
+            s1.setSpan(colorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            s1.setSpan(backgroundColorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.floatTextView.append(s1);
+
+            final Editable editable = (Editable) holder.floatTextView.getEditableText();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
+                            Color.parseColor(expand.getContentModule().getColor()));
+                    s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s1.removeSpan(backgroundColorSpan1);
+
+                    editable.replace(0,s1.length(),s1);
+
+                    ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
+                            Color.parseColor(expand.getContentModule().getFocus_color()));
+                    BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
+                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+                    s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    holder.floatTextView.append(s2);
+                }
+            },2000);
         }
 
         //修改字体大小,设置为px,并且修改颜色
