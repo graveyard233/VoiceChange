@@ -213,7 +213,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initFloatText(){
         for (int i = 0; i < 3; i++) {
-            FloatText f1 = new FloatText("你好","张三");
+            FloatText f1 = new FloatText("你好" +
+                    "我正在开发一个应用程序，它经常需要在TextView中向用户显示结果，就像某种日志一样。 该应用程序运行良好，它在TextView中显示结果，但只要它继续运行并添加行，由于TextView的字符长度，应用程序变慢并崩溃。 我想知道android API是否提供了强制TexView自动删除引入的最旧行以便为新的行腾出空间的任何方法。","张三");
             floatTextList.add(f1);
             FloatText f2 = new FloatText("hello","李四");
             floatTextList.add(f2);

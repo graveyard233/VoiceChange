@@ -3,9 +3,15 @@ package com.example.voicechange.FloatThings;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,11 +50,13 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView floatTextView;
         TextView floatTextPerson;
+        ScrollView scrollView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             floatTextView = itemView.findViewById(R.id.textView_text);
             floatTextPerson = itemView.findViewById(R.id.textView_person);
+            scrollView = itemView.findViewById(R.id.Myscroll);
         }
     }
 
@@ -68,12 +76,60 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
         //语音文字部分
         holder.floatTextView.setText(floatText.getText());
         holder.floatTextView.getPaint().setFakeBoldText(true);//字体加粗
+
         if (mgr != null){//修改字体
             Typeface typeface = Typeface.createFromAsset(mgr,
                     "ChuangKeTieJinGangTi-2.otf");
                     holder.floatTextView.setTypeface(typeface);
         }
 
+        holder.floatTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.scrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+                },1);
+            }
+        });
+
+        int lineheight = holder.floatTextView.getLineHeight();
+
+        holder.scrollView.setMinimumHeight(lineheight * 3);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                holder.scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+
+        //让scrollview碰不到
+        holder.scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                holder.floatTextView.append("最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方");
+            }
+        },2000);
 
 
 
@@ -83,6 +139,7 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
         if (color != null){
             holder.floatTextView.setTextColor(Color.parseColor(color));
         }
+
     }
 
 

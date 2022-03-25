@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,11 +64,13 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
     static class ViewHolder extends RecyclerView.ViewHolder{
         TextView floatTextView;
         TextView floatTextPerson;
+        ScrollView scrollView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             floatTextView = itemView.findViewById(R.id.textView_text);
             floatTextPerson = itemView.findViewById(R.id.textView_person);
+            scrollView = itemView.findViewById(R.id.Myscroll);
         }
     }
 
@@ -99,6 +102,20 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
         //设置最大行数
         if (expand != null){
             holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
+
+            // TODO: 2022/3/25  
+            //设置scroll,还没测试完
+            int maxlines = holder.floatTextView.getMaxLines();
+            int lineheight = holder.floatTextView.getLineHeight();
+            int scrollheight = lineheight * maxlines;
+            holder.scrollView.setMinimumHeight(scrollheight);
+
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    holder.scrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
         }
         //修改字体
         if (expand != null && mgr!= null){
