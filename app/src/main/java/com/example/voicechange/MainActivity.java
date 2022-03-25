@@ -19,6 +19,7 @@ import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -41,6 +42,7 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         myRecyclerView = MyRecyclerView.get(this);
         testText = findViewById(R.id.testText);
+        testText.setTextSize(TypedValue.COMPLEX_UNIT_PX,88);
 
         testText.append("我正在开发一个应用程序，它经常需要在TextView中向用户显示结果，就像某种日志一样。 该应用程序运行良好，它在TextView中显示结果，但只要它继续运行并添加行，由于TextView的字符长度，应用程序变慢并崩溃。 我想知道android API是否提供了强制TexView自动删除引入的最旧行以便为新的行腾出空间的任何方法。");
         final Editable editable = (Editable) testText.getEditableText();
@@ -306,11 +309,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 intent2.putExtra("DATA",MyExpandString);
                                 startService(intent2);
 
-                                if (expand_updateLayout.getBg_color() != null){//设置背景颜色
+                                if (!expand_updateLayout.getBg_color().equals("null")){//设置背景颜色
+                                    ///颜色不是背景图
                                     myRecyclerView.setBackgroundColor(Color.parseColor(expand_updateLayout.getBg_color()));
+                                } else if (expand_updateLayout.getBg().startsWith("http")){
+                                    // TODO: 2022/3/25  
+                                    System.out.println("这是图片为背景");
                                 }
                                 //设置透明度
-                                myRecyclerView.getBackground().mutate().setAlpha(Integer.parseInt(expand_updateLayout.getApha()));
+                                if (expand_updateLayout.getApha()!=null && !expand_updateLayout.getApha().equals("null")){
+                                    System.out.println(expand_updateLayout.getApha());
+                                    myRecyclerView.getBackground().mutate().setAlpha(Integer.parseInt(expand_updateLayout.getApha()));
+                                }
+//
+
                                 if (expand_updateLayout.getFont() != null){
                                     if (expand_updateLayout.getFont().equals("kaiTi")){
                                         Typeface typeface = Typeface.createFromAsset(getAssets(),"STKAITI.TTF");

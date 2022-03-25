@@ -12,21 +12,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingRight="15dp"/>
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/MyLinearlayout"
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:id="@+id/Myscroll"
-        android:scrollbars="none"
-        >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:text=""
-            android:id="@+id/textView_text"
-            android:textSize="25dp"
-
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </ScrollView>
+            android:layout_height="wrap_content"
+            android:id="@+id/Myscroll"
+            android:scrollbars="none"
+            >
+
+            <TextView
+                android:text=""
+                android:id="@+id/textView_text"
+                android:textSize="25dp"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </ScrollView>
+    </LinearLayout>
+
 
 
 

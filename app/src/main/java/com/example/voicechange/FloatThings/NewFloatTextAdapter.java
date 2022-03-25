@@ -10,14 +10,17 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -65,12 +68,14 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
         TextView floatTextView;
         TextView floatTextPerson;
         ScrollView scrollView;
+        LinearLayout linearLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             floatTextView = itemView.findViewById(R.id.textView_text);
             floatTextPerson = itemView.findViewById(R.id.textView_person);
             scrollView = itemView.findViewById(R.id.Myscroll);
+            linearLayout = itemView.findViewById(R.id.MyLinearlayout);
         }
     }
 
@@ -101,14 +106,23 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
         //设置最大行数
         if (expand != null){
-            holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
+//            holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
 
             // TODO: 2022/3/25  
             //设置scroll,还没测试完
             int maxlines = holder.floatTextView.getMaxLines();
-            int lineheight = holder.floatTextView.getLineHeight();
-            int scrollheight = lineheight * maxlines;
-            holder.scrollView.setMinimumHeight(scrollheight);
+            int lineheight =  holder.floatTextView.getLineHeight();
+            float scrollheight = lineheight * maxlines;
+
+            Log.e("TAG", "maxlines = " + maxlines + ",lineheight = " + lineheight + ",scrollheight = " + scrollheight + ",textSize = " + holder.floatTextView.getPaint().getTextSize());
+
+            ViewGroup.LayoutParams lp;
+            lp = holder.linearLayout.getLayoutParams();
+            lp.height = (int) holder.floatTextView.getTextSize() * Integer.parseInt(expand.getRows());
+            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            holder.linearLayout.setLayoutParams(lp);
+
+            holder.scrollView.setMinimumHeight(lineheight * Integer.parseInt(expand.getRows()));
 
             new Handler().post(new Runnable() {
                 @Override
@@ -116,6 +130,43 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                     holder.scrollView.fullScroll(View.FOCUS_DOWN);
                 }
             });
+            //让scrollview碰不到
+            holder.scrollView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true;
+                }
+            });
+
+            holder.floatTextView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            holder.scrollView.fullScroll(View.FOCUS_DOWN);
+                        }
+                    },1);
+                }
+            });
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    holder.floatTextView.append("最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方");
+                }
+            },2000);
         }
         //修改字体
         if (expand != null && mgr!= null){

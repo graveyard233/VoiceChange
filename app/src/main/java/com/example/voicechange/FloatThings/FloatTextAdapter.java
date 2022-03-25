@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -51,12 +52,14 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
         TextView floatTextView;
         TextView floatTextPerson;
         ScrollView scrollView;
+        LinearLayout linearLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             floatTextView = itemView.findViewById(R.id.textView_text);
             floatTextPerson = itemView.findViewById(R.id.textView_person);
             scrollView = itemView.findViewById(R.id.Myscroll);
+            linearLayout = itemView.findViewById(R.id.MyLinearlayout);
         }
     }
 
@@ -72,6 +75,14 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
     @Override
     public void onBindViewHolder(@NonNull FloatTextAdapter.ViewHolder holder, int position) {
         FloatText floatText = myFloatTextList.get(position);
+
+        int maxlines = holder.floatTextView.getMaxLines();
+        ViewGroup.LayoutParams lp;
+        lp = holder.linearLayout.getLayoutParams();
+        lp.height = (int) holder.floatTextView.getTextSize() * 3;
+        lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        holder.linearLayout.setLayoutParams(lp);
+
 
         //语音文字部分
         holder.floatTextView.setText(floatText.getText());
@@ -106,8 +117,9 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
         });
 
         int lineheight = holder.floatTextView.getLineHeight();
+        Log.e("TAG", "onBindViewHolder: floattextadapter" + lineheight);
 
-        holder.scrollView.setMinimumHeight(lineheight * 3);
+        holder.scrollView.setMinimumHeight(lineheight * 2);
 
         new Handler().post(new Runnable() {
             @Override
