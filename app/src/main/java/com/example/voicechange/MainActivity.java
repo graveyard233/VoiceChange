@@ -31,6 +31,7 @@ import com.example.voicechange.FloatThings.FloatTextAdapter;
 import com.example.voicechange.FloatThings.FloatViewService;
 import com.example.voicechange.FloatThings.MyRecyclerView;
 import com.example.voicechange.Info.Expand_updateAsrResultLayoutConfig;
+import com.example.voicechange.Info.OnChangeMsg;
 import com.example.voicechange.Info.SocketMsg;
 import com.example.voicechange.Info.TerminalInfo;
 import com.example.voicechange.POJO.JsonRootBean;
@@ -206,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_closeFloat:
                 Intent intent3 = new Intent(this, FloatViewService.class);
                 stopService(intent3);
-                myRecyclerView.hideTheView();
+//                myRecyclerView.hideTheView();
                 break;
             default:
                 break;
@@ -295,7 +296,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 sendData(finalMySocket,EVENT_GROUP,"0",FASHION_SINGLE,join,socketMsg1.getContent());//将设备加入组，之后就能收到来自服务器的信息了
                             }
 
-                            if (socketMsg1.getType().equals("updateAsrResultLayoutConfig")){//判断为更新布局
+
+                            //判断为更新布局
+                            if (socketMsg1.getType().equals("updateAsrResultLayoutConfig")){
                                 String expand = socketMsg1.getExpand();
                                 MyExpandString = socketMsg1.getExpand();
                                 System.out.println("expand:" + expand);
@@ -331,6 +334,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
 
 
+                            }
+
+                            //判断为语音转写
+                            if (socketMsg1.getType().equals("AsrPublish")){
+                                Log.i(TAG, "run: ");
+                                String expand = socketMsg1.getExpand();
+                                MyExpandString = socketMsg1.getExpand();
+                                OnChangeMsg onChangeMsg = gson_online.fromJson(expand,OnChangeMsg.class);
+                                if (onChangeMsg.getArr().getId() != -1)
+                                    System.out.println("participant_name: " + onChangeMsg.getParticipant_name() + ",content: " + onChangeMsg.getArr().getContent());
+//                                Intent intent3 = new Intent(getApplicationContext(), FloatViewService.class);//传递更新的数值，让service重新绘制
+//                                intent3.putExtra("DATA",MyExpandString);
+//                                startService(intent3);
                             }
                         }
                     }

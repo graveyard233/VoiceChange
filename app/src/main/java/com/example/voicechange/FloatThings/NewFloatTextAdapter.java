@@ -118,7 +118,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
             ViewGroup.LayoutParams lp;
             lp = holder.linearLayout.getLayoutParams();
-            lp.height = (int) holder.floatTextView.getTextSize() * Integer.parseInt(expand.getRows());
+            lp.height = (int) holder.floatTextView.getTextSize() * (Integer.parseInt(expand.getRows()) - 1) ;
             lp.width = ViewGroup.LayoutParams.WRAP_CONTENT;
             holder.linearLayout.setLayoutParams(lp);
 
@@ -156,6 +156,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                         public void run() {
 
                             holder.scrollView.fullScroll(View.FOCUS_DOWN);
+//                            final
                         }
                     },1);
                 }
@@ -164,7 +165,16 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    holder.floatTextView.append("最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方");
+                    String append_text = "最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方";
+                    //设置成正在转写的样式
+                    final SpannableString s_append = new SpannableString(append_text);
+                    ForegroundColorSpan colorSpan_append = new ForegroundColorSpan(
+                            Color.parseColor(expand.getContentModule().getFocus_color()));
+                    BackgroundColorSpan backgroundColorSpan_append = new BackgroundColorSpan(
+                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+                    s_append.setSpan(colorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    s_append.setSpan(backgroundColorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    holder.floatTextView.append(s_append);
                 }
             },2000);
         }
@@ -243,6 +253,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                             Color.parseColor(expand.getContentModule().getFocus_bg_color()));
             s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
             holder.floatTextView.append(s2);
 
 //            new Handler().postDelayed(new Runnable() {
