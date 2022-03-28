@@ -338,15 +338,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             //判断为语音转写
                             if (socketMsg1.getType().equals("AsrPublish")){
-                                Log.i(TAG, "run: ");
                                 String expand = socketMsg1.getExpand();
                                 MyExpandString = socketMsg1.getExpand();
                                 OnChangeMsg onChangeMsg = gson_online.fromJson(expand,OnChangeMsg.class);
-                                if (onChangeMsg.getArr().getId() != -1)
-                                    System.out.println("participant_name: " + onChangeMsg.getParticipant_name() + ",content: " + onChangeMsg.getArr().getContent());
-//                                Intent intent3 = new Intent(getApplicationContext(), FloatViewService.class);//传递更新的数值，让service重新绘制
-//                                intent3.putExtra("DATA",MyExpandString);
-//                                startService(intent3);
+                                if (onChangeMsg.getArr().getId() != -1 && onChangeMsg.getArr() != null){
+                                    Intent intent3 = new Intent(getApplicationContext(),FloatViewService.class);
+                                    intent3.putExtra("DATA2",MyExpandString);
+                                    startService(intent3);
+                                }
+
                             }
                         }
                     }

@@ -72,4 +72,8 @@ public class Arr {
     public String getCreate_time() {
         return create_time;
     }
+
+    public Arr(long id) {
+        this.id = id;
+    }
 }

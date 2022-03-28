@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voicechange.Info.Expand_updateAsrResultLayoutConfig;
+import com.example.voicechange.Info.OnChangeMsg;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -41,6 +42,14 @@ public class FloatViewService extends Service {
     MyRecyclerView myRecyclerView;
 
     private Expand_updateAsrResultLayoutConfig expand;
+
+    private NewFloatTextAdapter myAdapter;
+
+    private OnChangeMsg onChangeMsg;
+
+    private String temp_text = "";
+    private int sort = 0;
+    private StringBuffer right_text = new StringBuffer();
 
 
     @Override
@@ -70,50 +79,90 @@ public class FloatViewService extends Service {
         showFloatWindow();
     }
 
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String data = intent.getStringExtra("DATA");
-        Gson gson = new Gson();
-        expand = gson.fromJson(data,Expand_updateAsrResultLayoutConfig.class);
-        Log.d("TAG", "onStartCommand: " + expand.getContentModule().getColor());
+        String data2 = intent.getStringExtra("DATA2");
+
+        if (data != null){//更新布局设置
+            Gson gson = new Gson();
+            expand = gson.fromJson(data,Expand_updateAsrResultLayoutConfig.class);
+            Log.d("TAG", "onStartCommand: " + expand.getContentModule().getColor());
 //        System.out.println("onStartCommand:" + data);
-        if (myRecyclerView.getParent() != null){
-            windowManager.removeView(myRecyclerView);
+            if (myRecyclerView.getParent() != null){
+                windowManager.removeView(myRecyclerView);
+            }
+
+            //设置是否全屏
+            if (expand.getFull_screen().equals("1")){
+                layoutParams.height = windowManager.getDefaultDisplay().getHeight();
+                layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                        | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;//设置悬浮窗下面的控件可按
+            } else { //暂时重置为悬浮框放在最底下
+                layoutParams.width = windowManager.getDefaultDisplay().getWidth();//设置悬浮框的宽度为手机的宽度
+                layoutParams.height = 600;
+                layoutParams.x = 0;
+                layoutParams.y = windowManager.getDefaultDisplay().getHeight();//悬浮窗生成位置放在最底下
+                layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+            }
+
+            //根据expand设置悬浮框位置
+            //悬浮框宽度
+            double true_width = layoutParams.width;
+            layoutParams.width = (int) ((1.0 - Double.parseDouble(expand.getLocation_padding_left())
+                    - Double.parseDouble(expand.getLocation_padding_right()))
+                    * windowManager.getDefaultDisplay().getWidth());
+            double true_height = layoutParams.height;
+            layoutParams.height = (int) ((1.0 - Double.parseDouble(expand.getLocation_padding_top())
+                    - Double.parseDouble(expand.getLocation_padding_bottom()))
+                    * windowManager.getDefaultDisplay().getHeight());
+
+            double true_x = windowManager.getDefaultDisplay().getWidth() * Double.parseDouble(expand.getLocation_padding_left());
+            layoutParams.x = (int) true_x;
+            double true_y = windowManager.getDefaultDisplay().getHeight() * Double.parseDouble(expand.getLocation_padding_top());
+            layoutParams.y = (int) true_y;
+
+            showFloatWindow();
+            floatTextList.removeAll(floatTextList);
         }
 
-        //设置是否全屏
-        if (expand.getFull_screen().equals("1")){
-            layoutParams.height = windowManager.getDefaultDisplay().getHeight();
-            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                    | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;//设置悬浮窗下面的控件可按
-        } else { //暂时重置为悬浮框放在最底下
-            layoutParams.width = windowManager.getDefaultDisplay().getWidth();//设置悬浮框的宽度为手机的宽度
-            layoutParams.height = 600;
-            layoutParams.x = 0;
-            layoutParams.y = windowManager.getDefaultDisplay().getHeight();//悬浮窗生成位置放在最底下
-            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                    | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        if (data2 != null && myRecyclerView != null){
+            Gson gson = new Gson();
+            onChangeMsg = gson.fromJson(data2,OnChangeMsg.class);
+
+            Log.i("TAG", "onStartCommand:! " + onChangeMsg.getArr().getContent());
+
+            if (onChangeMsg.getArr().getSort() > 0){
+                int temp_sort = onChangeMsg.getArr().getSort();
+                // 初始化
+                if (temp_sort != sort && sort == 0){
+                    temp_text = onChangeMsg.getArr().getContent();
+                    sort= temp_sort;
+                }
+                //同一句，给text赋值
+                if (sort != 0 && sort == temp_sort){
+                    temp_text = onChangeMsg.getArr().getContent();//更新正在转换的文本
+                }
+                //正在转换的句子变化了
+                if (sort != temp_sort && sort != 0){
+                    right_text.append(temp_text);
+                    sort = temp_sort;//更新sort
+                }
+            }
+
+            if (right_text!=null){
+                initFloatText(right_text.toString(),temp_text);
+            } else {
+                initFloatText(temp_text);
+            }
+
+            initAdapter();
+//            myAdapter.setMyFloatTextList(floatTextList);
+            myRecyclerView.setAdapter(myAdapter);
+            myAdapter.changeData(1);
         }
-
-        //根据expand设置悬浮框位置
-        //悬浮框宽度
-        double true_width = layoutParams.width;
-        layoutParams.width = (int) ((1.0 - Double.parseDouble(expand.getLocation_padding_left())
-                        - Double.parseDouble(expand.getLocation_padding_right()))
-                        * windowManager.getDefaultDisplay().getWidth());
-        double true_height = layoutParams.height;
-        layoutParams.height = (int) ((1.0 - Double.parseDouble(expand.getLocation_padding_top())
-                - Double.parseDouble(expand.getLocation_padding_bottom()))
-                * windowManager.getDefaultDisplay().getHeight());
-
-        double true_x = windowManager.getDefaultDisplay().getWidth() * Double.parseDouble(expand.getLocation_padding_left());
-        layoutParams.x = (int) true_x;
-        double true_y = windowManager.getDefaultDisplay().getHeight() * Double.parseDouble(expand.getLocation_padding_top());
-        layoutParams.y = (int) true_y;
-
-        showFloatWindow();
 
         return super.onStartCommand(intent, flags, startId);
 
@@ -137,8 +186,8 @@ public class FloatViewService extends Service {
 //        }
 //
 //        myRecyclerView.setAdapter(adapter);
-        NewFloatTextAdapter adapter = initAdapter();
-        myRecyclerView.setAdapter(adapter);
+        myAdapter = initAdapter();
+        myRecyclerView.setAdapter(myAdapter);
         windowManager.addView(myRecyclerView,layoutParams);
         //设置是否允许移动
         if (expand != null && expand.getWindow_allow_move().equals("1")){
@@ -148,12 +197,12 @@ public class FloatViewService extends Service {
     }
 
     private NewFloatTextAdapter initAdapter(){
-        NewFloatTextAdapter adapter = new NewFloatTextAdapter(floatTextList);
+        myAdapter = new NewFloatTextAdapter(floatTextList);
         if (expand != null){
-            adapter.setExpand(expand);
-            adapter.setMgr(getAssets());
+            myAdapter.setExpand(expand);
+            myAdapter.setMgr(getAssets());
         }
-        return adapter;
+        return myAdapter;
     }
 
     private void initFloatText(){
@@ -173,6 +222,27 @@ public class FloatViewService extends Service {
             floatTextList.add(f3);
             FloatText f4 = new FloatText("i know i know","九六",test);
             floatTextList.add(f4);
+        }
+    }
+
+    // TODO: 2022/3/28  
+    public void initFloatText(String text1,String text2){
+//        floatTextList.removeAll(floatTextList);
+        for (int i = 0; i < 1; i++) {
+            FloatText f1 = new FloatText(text1 , "张三", text2);
+            if (floatTextList.size() > 0)
+                floatTextList.remove(i);
+            floatTextList.add(f1);
+        }
+    }
+
+    public void initFloatText(String text){
+//        floatTextList.removeAll(floatTextList);
+        for (int i = 0; i < 1; i++) {
+            FloatText f1 = new FloatText("" , "张三",text);
+            if (floatTextList.size() > 0)
+                floatTextList.remove(i);
+            floatTextList.add(f1);
         }
     }
 

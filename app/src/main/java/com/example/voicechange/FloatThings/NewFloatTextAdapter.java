@@ -106,15 +106,12 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
         //设置最大行数
         if (expand != null){
-//            holder.floatTextView.setMaxLines(Integer.parseInt(expand.getRows()) - 1);//- 2
 
             // TODO: 2022/3/25  
             //设置scroll,还没测试完
             int maxlines = holder.floatTextView.getMaxLines();
             int lineheight =  holder.floatTextView.getLineHeight();
             float scrollheight = lineheight * maxlines;
-
-            Log.e("TAG", "maxlines = " + maxlines + ",lineheight = " + lineheight + ",scrollheight = " + scrollheight + ",textSize = " + holder.floatTextView.getPaint().getTextSize());
 
             ViewGroup.LayoutParams lp;
             lp = holder.linearLayout.getLayoutParams();
@@ -158,29 +155,28 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                             holder.scrollView.fullScroll(View.FOCUS_DOWN);
 //                            final
                         }
-                    },1);
+                    },0);
                 }
             });
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    String append_text = "最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方";
-                    //设置成正在转写的样式
-                    final SpannableString s_append = new SpannableString(append_text);
-                    ForegroundColorSpan colorSpan_append = new ForegroundColorSpan(
-                            Color.parseColor(expand.getContentModule().getFocus_color()));
-                    BackgroundColorSpan backgroundColorSpan_append = new BackgroundColorSpan(
-                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
-                    s_append.setSpan(colorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    s_append.setSpan(backgroundColorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    holder.floatTextView.append(s_append);
-                }
-            },2000);
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    String append_text = "最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方";
+//                    //设置成正在转写的样式
+//                    final SpannableString s_append = new SpannableString(append_text);
+//                    ForegroundColorSpan colorSpan_append = new ForegroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getFocus_color()));
+//                    BackgroundColorSpan backgroundColorSpan_append = new BackgroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+//                    s_append.setSpan(colorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    s_append.setSpan(backgroundColorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    holder.floatTextView.append(s_append);
+//                }
+//            },2000);
         }
         //修改字体
         if (expand != null && mgr!= null){
-            Log.d("TAG", "开始修改字体");
             if (expand.getFont().equals("kaiTi")){
                 Typeface typeface1 = Typeface.createFromAsset(mgr,
                         "STKAITI.TTF");
@@ -320,7 +316,15 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
     }
 
 
+    public void changeData(int position){
+        Log.e("TAG", "changeData: item update");
 
+        notifyItemChanged(position,myFloatTextList);
+    }
+
+    public void setMyFloatTextList(List<FloatText> myFloatTextList) {
+        this.myFloatTextList = myFloatTextList;
+    }
 
     @Override
     public int getItemCount() {

@@ -49,10 +49,10 @@ public class OnChangeMsg {
         this.arr  = arr ;
     }
     public Arr getArr () {
-        if (arr.get(0) != null)
+        if (arr != null && arr.size() != 0)
             return arr.get(0);
         else {
-            arr.get(0).setId(-1);
+            arr.add(new Arr(-1));
             return arr.get(0);
         }
     }
