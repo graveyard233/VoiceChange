@@ -88,21 +88,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
         return holder;
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
-        super.onBindViewHolder(holder, position, payloads);
-        if (payloads.isEmpty()){
-            onBindViewHolder(holder,position);
-        } else {
-            String payload = (String) payloads.get(0);
-            Log.d("TAG", "payload = " + payload);
 
-            final FloatText floatText = myFloatTextList.get(position);
-            if (floatText != null){
-                holder.floatTextView.setText(floatText.getText());
-            }
-        }
-    }
 
     @Override
     public void onBindViewHolder(@NonNull NewFloatTextAdapter.ViewHolder holder, int position) {
@@ -171,25 +157,10 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                             holder.scrollView.fullScroll(View.FOCUS_DOWN);
 //                            final
                         }
-                    },0);
+                    },500);
                 }
             });
 
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    String append_text = "最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方";
-//                    //设置成正在转写的样式
-//                    final SpannableString s_append = new SpannableString(append_text);
-//                    ForegroundColorSpan colorSpan_append = new ForegroundColorSpan(
-//                            Color.parseColor(expand.getContentModule().getFocus_color()));
-//                    BackgroundColorSpan backgroundColorSpan_append = new BackgroundColorSpan(
-//                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
-//                    s_append.setSpan(colorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    s_append.setSpan(backgroundColorSpan_append,0,s_append.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    holder.floatTextView.append(s_append);
-//                }
-//            },2000);
         }
         //修改字体
         if (expand != null && mgr!= null){
@@ -213,52 +184,20 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
         //语音文字部分
         if (expand!=null && floatText.getOn_change_text() != null && floatText.getText() != null){
-//            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
-//            StringBuffer stringBuffer = new StringBuffer();
-//            stringBuffer.append(floatText.getText());
-//            stringBuilder.append(stringBuffer);
-//            stringBuilder.append(floatText.getOn_change_text());
-//            //设置已经转好的文字
-//            ForegroundColorSpan colorSpan1 = new
-//                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getColor()));
-//            stringBuilder.setSpan(colorSpan1,0,floatText.getText().length(),
-//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//
-//            //设置转写中的文字
-//            ForegroundColorSpan colorSpan2 = new
-//                    ForegroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_color()));
-//            stringBuilder.setSpan(colorSpan2,
-//                    floatText.getText().length(),
-//                    floatText.getOn_change_text().length() + floatText.getText().length(),
-//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            stringBuilder.setSpan(new BackgroundColorSpan(Color.parseColor(expand.getContentModule().getFocus_bg_color())),
-//                    floatText.getText().length(),
-//                    floatText.getOn_change_text().length() + floatText.getText().length(),
-//                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            holder.floatTextView.setText(stringBuilder);
+
+            int origin_text_length = holder.floatTextView.getText().length();
             final SpannableString s1 = new SpannableString(floatText.getText());
             final SpannableString s2 = new SpannableString(floatText.getOn_change_text());
 
-            //将第一段变成正在转写的样式
-//            final ForegroundColorSpan colorSpan1 = new ForegroundColorSpan(
-//                    Color.parseColor(expand.getContentModule().getFocus_color()));
-//            final BackgroundColorSpan backgroundColorSpan1 = new BackgroundColorSpan(
-//                    Color.parseColor(expand.getContentModule().getFocus_bg_color()));
-//
-//            s1.setSpan(colorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            s1.setSpan(backgroundColorSpan1,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            holder.floatTextView.append(s1);
-//
-//            Editable editable = (Editable) holder.floatTextView.getEditableText();
 
-            //复制出来的
+            //设置转好的文本
             ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
                             Color.parseColor(expand.getContentModule().getColor()));
             s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            s1.removeSpan(backgroundColorSpan1);
 
-            holder.floatTextView.append(s1);
+            holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
 
+            //设置正在转写的文本
             ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
                             Color.parseColor(expand.getContentModule().getFocus_color()));
             BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
@@ -266,27 +205,15 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
             s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            holder.floatTextView.append(s2);
 
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
-//                            Color.parseColor(expand.getContentModule().getColor()));
-//                    s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    s1.removeSpan(backgroundColorSpan1);
-//
-//                    editable.replace(0,s1.length(),s1);
-//
-//                    ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
-//                            Color.parseColor(expand.getContentModule().getFocus_color()));
-//                    BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
-//                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
-//                    s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    holder.floatTextView.append(s2);
-//                }
-//            },500);
+
+//            final Editable editable = (Editable) holder.floatTextView.getEditableText();
+//            if (origin_text_length - s2.length() > 0)
+//                editable.delete(origin_text_length - s2.length(),origin_text_length);
+
+            holder.floatTextView.append(s2);
+            
+
         }
 
         //修改字体大小,设置为px,并且修改颜色
@@ -294,30 +221,6 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
             holder.floatTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                     Float.parseFloat(expand.getContentModule().getSize()));
         }
-
-        //我自己的删除方法
-//        if (expand != null){
-//            final Editable editable2 = (Editable) holder.floatTextView.getEditableText();
-//            holder.floatTextView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                @Override
-//                public void onGlobalLayout() {
-//                    int Lines = holder.floatTextView.getLineCount();
-//                    int need_lines = Integer.parseInt(expand.getRows());
-//                    int line_to_move = Lines - need_lines + 1;
-//                    if (line_to_move > 0){
-//                        for (int i = 0; i < line_to_move; i++) {
-//                            int lineStart = holder.floatTextView.getLayout().getLineStart(0);
-//                            int lineEnd = holder.floatTextView.getLayout().getLineEnd(0);
-//                            editable2.delete(lineStart,lineEnd);
-//                        }
-//                    }
-//                    holder.floatTextView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//                }
-//            });
-//        }
-
-
-
 
         //设置说话人的部分
         holder.floatTextPerson.setText(floatText.getPerson());
@@ -332,9 +235,9 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
     }
 
 
-    public void changeData(int position){
+    public void changeData(int position,List<FloatText> floatTextList){
         Log.e("TAG", "changeData: item update");
-
+        myFloatTextList = floatTextList;
         notifyItemChanged(position,myFloatTextList);
     }
 

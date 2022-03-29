@@ -112,7 +112,7 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
                     public void run() {
                         holder.scrollView.fullScroll(View.FOCUS_DOWN);
                     }
-                },1000);
+                },500);
             }
         });
 
@@ -157,7 +157,6 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
     }
 
     public void changeData(int position,List<FloatText> floatTextList){
-        Log.e("TAG", "changeData: item update");
         myFloatTextList = floatTextList;
         notifyItemChanged(position,myFloatTextList);
     }

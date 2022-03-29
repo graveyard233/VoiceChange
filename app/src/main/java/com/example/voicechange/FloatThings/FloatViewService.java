@@ -50,6 +50,7 @@ public class FloatViewService extends Service {
     private String temp_text = "";
     private int sort = 0;
     private StringBuffer right_text = new StringBuffer();
+    private String single_text = "";
 
 
     @Override
@@ -147,8 +148,15 @@ public class FloatViewService extends Service {
                 }
                 //正在转换的句子变化了
                 if (sort != temp_sort && sort != 0){
-                    right_text.append(temp_text);
+//                    right_text.append(temp_text);
+
+//                    single_text = temp_text;//将已转写好的一句保存
+
                     sort = temp_sort;//更新sort
+                }
+                if (onChangeMsg.getType().equals("SentenceEnd")){
+                    single_text = onChangeMsg.getArr().getContent();//拿到转好的句子
+                    right_text.append(single_text);
                 }
             }
 
@@ -157,11 +165,9 @@ public class FloatViewService extends Service {
             } else {
                 initFloatText(temp_text);
             }
-
-            initAdapter();
 //            myAdapter.setMyFloatTextList(floatTextList);
 //            myRecyclerView.setAdapter(myAdapter);
-            myAdapter.changeData(1);
+            myAdapter.changeData(0,floatTextList);
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -234,9 +240,10 @@ public class FloatViewService extends Service {
 //            if (floatTextList.size() > 0)
 //                floatTextList.remove(i);
 //            floatTextList.add(f1);
-            if (floatTextList == null){
+            if (floatTextList.size() == 0) {
                 floatTextList.add(f1);
-            } else {
+            }
+            else {
                 floatTextList.set(0,f1);
             }
 
