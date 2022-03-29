@@ -112,7 +112,7 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
                     public void run() {
                         holder.scrollView.fullScroll(View.FOCUS_DOWN);
                     }
-                },1);
+                },1000);
             }
         });
 
@@ -129,19 +129,21 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
         });
 
         //让scrollview碰不到
-        holder.scrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
+//        holder.scrollView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return true;
+//            }
+//        });
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                holder.floatTextView.append("最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方");
-            }
-        },2000);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.i("TAG", "run: ");
+//                holder.floatTextView.append("最近发现自己负责的项目中，有使用 ScrollView 嵌套 RecyclerView 的地方");
+//            }
+//        },2000);
+
 
 
 
@@ -154,6 +156,11 @@ public class FloatTextAdapter extends RecyclerView.Adapter<FloatTextAdapter.View
 
     }
 
+    public void changeData(int position,List<FloatText> floatTextList){
+        Log.e("TAG", "changeData: item update");
+        myFloatTextList = floatTextList;
+        notifyItemChanged(position,myFloatTextList);
+    }
 
 
 

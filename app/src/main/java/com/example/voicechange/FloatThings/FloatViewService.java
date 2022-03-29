@@ -160,7 +160,7 @@ public class FloatViewService extends Service {
 
             initAdapter();
 //            myAdapter.setMyFloatTextList(floatTextList);
-            myRecyclerView.setAdapter(myAdapter);
+//            myRecyclerView.setAdapter(myAdapter);
             myAdapter.changeData(1);
         }
 
@@ -218,6 +218,7 @@ public class FloatViewService extends Service {
             floatTextList.add(f1);
             FloatText f2 = new FloatText("hello","李四",test);
             floatTextList.add(f2);
+            floatTextList.set(1,f1);
             FloatText f3 = new FloatText("我知道了","王五",test);
             floatTextList.add(f3);
             FloatText f4 = new FloatText("i know i know","九六",test);
@@ -225,14 +226,20 @@ public class FloatViewService extends Service {
         }
     }
 
-    // TODO: 2022/3/28  
+    // TODO: 2022/3/28
     public void initFloatText(String text1,String text2){
 //        floatTextList.removeAll(floatTextList);
         for (int i = 0; i < 1; i++) {
             FloatText f1 = new FloatText(text1 , "张三", text2);
-            if (floatTextList.size() > 0)
-                floatTextList.remove(i);
-            floatTextList.add(f1);
+//            if (floatTextList.size() > 0)
+//                floatTextList.remove(i);
+//            floatTextList.add(f1);
+            if (floatTextList == null){
+                floatTextList.add(f1);
+            } else {
+                floatTextList.set(0,f1);
+            }
+
         }
     }
 
@@ -240,9 +247,14 @@ public class FloatViewService extends Service {
 //        floatTextList.removeAll(floatTextList);
         for (int i = 0; i < 1; i++) {
             FloatText f1 = new FloatText("" , "张三",text);
-            if (floatTextList.size() > 0)
-                floatTextList.remove(i);
-            floatTextList.add(f1);
+//            if (floatTextList.size() > 0)
+//                floatTextList.remove(i);
+//            floatTextList.add(f1);
+            if (floatTextList == null){
+                floatTextList.add(f1);
+            } else {
+                floatTextList.set(0,f1);
+            }
         }
     }
 

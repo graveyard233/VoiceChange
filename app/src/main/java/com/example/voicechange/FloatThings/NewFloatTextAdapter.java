@@ -89,6 +89,22 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
     }
 
     @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
+        if (payloads.isEmpty()){
+            onBindViewHolder(holder,position);
+        } else {
+            String payload = (String) payloads.get(0);
+            Log.d("TAG", "payload = " + payload);
+
+            final FloatText floatText = myFloatTextList.get(position);
+            if (floatText != null){
+                holder.floatTextView.setText(floatText.getText());
+            }
+        }
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull NewFloatTextAdapter.ViewHolder holder, int position) {
         FloatText floatText = myFloatTextList.get(position);
 

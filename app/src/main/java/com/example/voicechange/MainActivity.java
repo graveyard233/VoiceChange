@@ -126,7 +126,95 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(adapter);
         recyclerView.getBackground().mutate().setAlpha(150);
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },500);
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },2900);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3000);
+//全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关于2021年国民经济和社会发展计划执行情况与于2022年国民经济和社会发展计划草案的审查结果报告。
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3100);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3200);
+//
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关于","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3300);
+//
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关于2","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3400);
+//
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关于20","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3500);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关于201","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3600);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "run: mine");
+                floatTextList.set(0,new FloatText("你说:全国人大财政经济委员会主任委员徐绍史向会议作了财政经济委员会关于2012","我的"));
+                adapter.changeData(0,floatTextList);
+            }
+        },3700);
 
         myRecyclerView = MyRecyclerView.get(this);
         testText = findViewById(R.id.testText);
