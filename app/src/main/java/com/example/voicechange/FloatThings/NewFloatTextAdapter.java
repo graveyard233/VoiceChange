@@ -199,7 +199,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
             final Editable editable = holder.floatTextView.getEditableText();
             if (editable == null)
                 holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
-            else {
+            else {//正确
                 editable.replace(0,holder.floatTextView.getText().length(),s1);
             }
 
