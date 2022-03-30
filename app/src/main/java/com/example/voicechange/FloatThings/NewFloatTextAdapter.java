@@ -123,12 +123,12 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
 
             holder.scrollView.setMinimumHeight(lineheight * Integer.parseInt(expand.getRows()));
 
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    holder.scrollView.fullScroll(View.FOCUS_DOWN);
-                }
-            });
+//            new Handler().post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    holder.scrollView.fullScroll(View.FOCUS_DOWN);
+//                }
+//            });
             //让scrollview碰不到
             holder.scrollView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -157,7 +157,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                             holder.scrollView.fullScroll(View.FOCUS_DOWN);
 //                            final
                         }
-                    },500);
+                    },1000);
                 }
             });
 
@@ -182,37 +182,57 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
         }
 
 
+        Editable editable =  holder.floatTextView.getEditableText();
         //语音文字部分
-        if (expand!=null && floatText.getOn_change_text() != null && floatText.getText() != null){
+        if (expand!=null && floatText.getOn_change_text() != null ){
+
+
+
 
             int origin_text_length = holder.floatTextView.getText().length();
-            final SpannableString s1 = new SpannableString(floatText.getText());
+
+            final SpannableString s1;
+            if (floatText.getText() != null){
+                s1 = new SpannableString(floatText.getText());
+                //设置转好的文本
+                ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
+                        Color.parseColor(expand.getContentModule().getColor()));
+                s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.floatTextView.append(s1);
+
+            }
+//            final SpannableString s1 = new SpannableString(floatText.getText());
             final SpannableString s2 = new SpannableString(floatText.getOn_change_text());
 
 
-            //设置转好的文本
-            ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
-                            Color.parseColor(expand.getContentModule().getColor()));
-            s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
-
-            //设置正在转写的文本
-            ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
-                            Color.parseColor(expand.getContentModule().getFocus_color()));
-            BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
-                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
-            s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-
-
-//            final Editable editable = (Editable) holder.floatTextView.getEditableText();
-//            if (origin_text_length - s2.length() > 0)
-//                editable.delete(origin_text_length - s2.length(),origin_text_length);
-
-            holder.floatTextView.append(s2);
-            
+//            //设置转好的文本
+//            ForegroundColorSpan colorSpan0 = new ForegroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getColor()));
+////            s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+////            if (editable == null)
+////                holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
+////            else
+////                editable.replace(origin_text_length - myFloatTextList.get(0).getOld_text().length(),
+////                        origin_text_length,s1);
+//
+//            //设置正在转写的文本
+//            ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getFocus_color()));
+//            BackgroundColorSpan backgroundColorSpan2 = new BackgroundColorSpan(
+//                            Color.parseColor(expand.getContentModule().getFocus_bg_color()));
+//            s2.setSpan(colorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            s2.setSpan(backgroundColorSpan2,0,s2.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+////            holder.floatTextView.append(s2);
+//
+//            if (editable == null)
+//                holder.floatTextView.append(s2);
+//            if (editable != null && floatText.getOld_text() != null
+//                    && origin_text_length - floatText.getOld_text().length() >= 0){
+//                editable.replace(origin_text_length - floatText.getOld_text().length(),
+//                        origin_text_length,s2);
+//            }
 
         }
 
