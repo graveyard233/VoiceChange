@@ -195,13 +195,7 @@ public class NewFloatTextAdapter extends RecyclerView.Adapter<NewFloatTextAdapte
                             Color.parseColor(expand.getContentModule().getColor()));
             s1.setSpan(colorSpan0,0,s1.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-//            holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
-            final Editable editable = holder.floatTextView.getEditableText();
-            if (editable == null)
-                holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
-            else {
-                editable.replace(0,holder.floatTextView.getText().length(),s1);
-            }
+            holder.floatTextView.setText(s1);//这里之后将只添加一句转好的话
 
             //设置正在转写的文本
             ForegroundColorSpan colorSpan2 = new ForegroundColorSpan(

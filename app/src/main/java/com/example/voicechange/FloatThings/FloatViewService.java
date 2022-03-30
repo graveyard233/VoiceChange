@@ -50,7 +50,8 @@ public class FloatViewService extends Service {
     private String temp_text = "";
     private int sort = 0;
     private StringBuffer right_text = new StringBuffer();
-    private String single_text = "";
+
+    private List<String> old_sentence_list = new ArrayList<>();
 
 
     @Override
@@ -134,17 +135,20 @@ public class FloatViewService extends Service {
             onChangeMsg = gson.fromJson(data2,OnChangeMsg.class);
 
             Log.i("TAG", "onStartCommand:! " + onChangeMsg.getArr().getContent());
-
+            String single_text = null;
             if (onChangeMsg.getArr().getSort() > 0){
                 int temp_sort = onChangeMsg.getArr().getSort();
+
                 // 初始化
                 if (temp_sort != sort && sort == 0){
                     temp_text = onChangeMsg.getArr().getContent();
                     sort= temp_sort;
+                    old_sentence_list.add(temp_text);
                 }
                 //同一句，给text赋值
                 if (sort != 0 && sort == temp_sort){
                     temp_text = onChangeMsg.getArr().getContent();//更新正在转换的文本
+                    old_sentence_list.add(temp_text);
                 }
                 //正在转换的句子变化了
                 if (sort != temp_sort && sort != 0){
@@ -157,11 +161,13 @@ public class FloatViewService extends Service {
                 if (onChangeMsg.getType().equals("SentenceEnd")){
                     single_text = onChangeMsg.getArr().getContent();//拿到转好的句子
                     right_text.append(single_text);
+                    old_sentence_list.add(single_text);
                 }
             }
 
-            if (right_text!=null){
-                initFloatText(right_text.toString(),temp_text);
+            if (right_text!=null && single_text != null){
+//                initFloatText(right_text.toString(),temp_text);
+                initFloatText(single_text,"李四",temp_text,old_sentence_list.get(old_sentence_list.size() - 1));
             } else {
                 initFloatText(temp_text);
             }
@@ -232,6 +238,18 @@ public class FloatViewService extends Service {
         }
     }
 
+    public void initFloatText(String text, String person, String on_change_text, String old_text){//新的，带上一句的初始化
+        for (int i = 0; i < 1; i++) {
+            FloatText f1 = new FloatText(text, person, on_change_text,old_text);
+            if (floatTextList.size() == 0) {
+                floatTextList.add(f1);
+            }
+            else {
+                floatTextList.set(0,f1);
+            }
+        }
+    }
+
     // TODO: 2022/3/28
     public void initFloatText(String text1,String text2){
 //        floatTextList.removeAll(floatTextList);
@@ -257,7 +275,7 @@ public class FloatViewService extends Service {
 //            if (floatTextList.size() > 0)
 //                floatTextList.remove(i);
 //            floatTextList.add(f1);
-            if (floatTextList == null){
+            if (floatTextList.size() == 0){
                 floatTextList.add(f1);
             } else {
                 floatTextList.set(0,f1);

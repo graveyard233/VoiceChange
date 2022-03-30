@@ -5,6 +5,7 @@ public class FloatText {
     String person;
     int text_id;
     String on_change_text;
+    String old_text;
 
     public FloatText(String text, String person) {
         this.text = text;
@@ -15,6 +16,21 @@ public class FloatText {
         this.text = text;
         this.person = person;
         this.on_change_text = on_change_text;
+    }
+
+    public FloatText(String text,String person, String on_change_text, String old_text) {
+        this.text = text;
+        this.person = person;
+        this.on_change_text = on_change_text;
+        this.old_text = old_text;
+    }
+
+    public String getOld_text() {
+        return old_text;
+    }
+
+    public void setOld_text(String old_text) {
+        this.old_text = old_text;
     }
 
     public String getOn_change_text() {
